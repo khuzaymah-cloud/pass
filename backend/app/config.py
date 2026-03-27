@@ -32,7 +32,7 @@ class Settings(BaseSettings):
     OTP_RATE_LIMIT: int = 3
     OTP_RATE_WINDOW: int = 600
 
-    CORS_ORIGINS: str = '["http://localhost:3000","http://localhost:8080"]'
+    CORS_ORIGINS: str = '["http://localhost:3000","http://localhost:4200","http://localhost:8080","http://localhost:80"]'
 
     @property
     def cors_origins_list(self) -> List[str]:
