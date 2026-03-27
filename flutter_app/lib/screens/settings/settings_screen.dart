@@ -52,7 +52,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.sm),
-            GlassCard(child: const Center(child: ThemeSwitcher())),
+            const GlassCard(child: Center(child: ThemeSwitcher())),
             const SizedBox(height: AppSpacing.lg),
             // Version
             Center(

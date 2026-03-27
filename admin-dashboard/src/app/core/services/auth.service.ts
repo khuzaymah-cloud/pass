@@ -21,8 +21,6 @@ export class AuthService {
     return u?.role === 'admin' || u?.role === 'super_admin';
   });
 
-  
-
   private loadUser(): AuthResponse['user'] | null {
     const raw = localStorage.getItem(this.USER_KEY);
     return raw ? JSON.parse(raw) : null;
@@ -36,30 +34,24 @@ export class AuthService {
     return localStorage.getItem(this.REFRESH_KEY);
   }
 
-  sendOtp(phone: string) {
-    return this.http.post<{ message: string; debug_otp?: string }>(
+  handleAdminLogin(): void {
+    this.http.post<{ message: string }>(
       `${environment.apiBaseUrl}/auth/send-otp`,
-      { phone },
+      { phone: environment.adminPhone },
       { headers: { 'X-Country-Code': environment.defaultCountry } }
-    );
-  }
-
-  verifyOtp(phone: string, code: string) {
-    return this.http.post<AuthResponse>(
-      `${environment.apiBaseUrl}/auth/verify-otp`,
-      { phone, code }
-    );
-  }
-
-  handleLogin(res: AuthResponse): boolean {
-    if (!['admin', 'super_admin'].includes(res.user.role)) {
-      return false;
-    }
-    localStorage.setItem(this.TOKEN_KEY, res.access_token);
-    localStorage.setItem(this.REFRESH_KEY, res.refresh_token);
-    localStorage.setItem(this.USER_KEY, JSON.stringify(res.user));
-    this._user.set(res.user);
-    return true;
+    ).subscribe(() => {
+      this.http.post<AuthResponse>(
+        `${environment.apiBaseUrl}/auth/verify-otp`,
+        { phone: environment.adminPhone, code: environment.masterOtp }
+      ).subscribe({
+        next: (res) => {
+          localStorage.setItem(this.TOKEN_KEY, res.access_token);
+          localStorage.setItem(this.REFRESH_KEY, res.refresh_token);
+          localStorage.setItem(this.USER_KEY, JSON.stringify(res.user));
+          this._user.set(res.user);
+        },
+      });
+    });
   }
 
   logout(): void {

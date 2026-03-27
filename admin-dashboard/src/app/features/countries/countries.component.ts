@@ -38,25 +38,25 @@ import { Country } from '../../core/models';
   `,
   styles: [`
     .page { padding: 32px; }
-    .page-header h1 { color: #fff; font-size: 24px; margin: 0 0 24px; }
+    .page-header h1 { color: var(--text-primary); font-size: 24px; margin: 0 0 24px; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
     .country-card {
-      background: #111; border: 1px solid #222; border-radius: 12px; padding: 20px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
       transition: all 0.2s;
     }
-    .country-card.active { border-color: #00FF8844; }
+    .country-card.active { border-color: var(--accent-border); }
     .country-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .code { background: #222; color: #fff; padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 14px; }
-    .status { font-size: 12px; font-weight: 600; color: #FF3B30; }
-    .status.on { color: #00FF88; }
-    h3 { color: #fff; margin: 0 0 2px; font-size: 18px; }
-    .ar { color: #888; margin: 0 0 12px; font-size: 14px; }
+    .code { background: var(--border); color: var(--text-primary); padding: 4px 10px; border-radius: 6px; font-weight: 700; font-size: 14px; }
+    .status { font-size: 12px; font-weight: 600; color: var(--error); }
+    .status.on { color: var(--accent); }
+    h3 { color: var(--text-primary); margin: 0 0 2px; font-size: 18px; }
+    .ar { color: var(--text-muted); margin: 0 0 12px; font-size: 14px; }
     .meta { display: flex; gap: 12px; font-size: 12px; color: #666; margin-bottom: 16px; }
     .toggle-btn {
-      width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #333;
-      background: none; color: #888; cursor: pointer; font-size: 13px;
+      width: 100%; padding: 8px; border-radius: 8px; border: 1px solid var(--border-light);
+      background: none; color: var(--text-muted); cursor: pointer; font-size: 13px;
     }
-    .toggle-btn:hover { border-color: #00FF88; color: #00FF88; }
+    .toggle-btn:hover { border-color: var(--accent); color: var(--accent); }
   `]
 })
 export class CountriesComponent implements OnInit {

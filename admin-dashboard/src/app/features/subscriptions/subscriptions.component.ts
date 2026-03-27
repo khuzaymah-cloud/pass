@@ -66,23 +66,23 @@ import { Subscription } from '../../core/models';
   styles: [`
     .page { padding: 32px; }
     .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-    .page-header h1 { color: #fff; font-size: 24px; margin: 0; }
+    .page-header h1 { color: var(--text-primary); font-size: 24px; margin: 0; }
     .filters { display: flex; gap: 8px; }
-    .filter-select { background: #111; border: 1px solid #333; border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 14px; outline: none; }
-    .btn-action { background: #00FF88; color: #000; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600; cursor: pointer; font-size: 13px; }
+    .filter-select { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 8px 12px; color: var(--text-primary); font-size: 14px; outline: none; }
+    .btn-action { background: var(--accent); color: var(--bg-primary); border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600; cursor: pointer; font-size: 13px; }
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-    .modal { background: #111; border: 1px solid #222; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #222; }
-    .modal-header h2 { color: #fff; font-size: 20px; margin: 0; }
-    .close-btn { background: none; border: none; color: #888; font-size: 20px; cursor: pointer; }
+    .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+    .modal-header h2 { color: var(--text-primary); font-size: 20px; margin: 0; }
+    .close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
     .modal-body { padding: 24px; }
     .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
     .detail-item { display: flex; flex-direction: column; gap: 4px; }
-    .label { color: #888; font-size: 12px; font-weight: 600; text-transform: uppercase; }
-    .value { color: #fff; font-size: 14px; } .id-val { font-size: 11px; color: #666; word-break: break-all; }
+    .label { color: var(--text-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; }
+    .value { color: var(--text-primary); font-size: 14px; } .id-val { font-size: 11px; color: #666; word-break: break-all; }
     .badge { font-weight: 700; }
     .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
-    .btn-activate { background: #00FF88; color: #000; border: none; border-radius: 8px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 14px; }
+    .btn-activate { background: var(--accent); color: var(--bg-primary); border: none; border-radius: 8px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 14px; }
   `]
 })
 export class SubscriptionsComponent implements OnInit {
@@ -95,7 +95,7 @@ export class SubscriptionsComponent implements OnInit {
 
   columns: TableColumn[] = [
     { key: 'user_id', label: 'User ID' },
-    { key: 'status', label: 'Status', type: 'badge', badgeColors: { active: '#00FF88', pending: '#FFD60A', expired: '#FF3B30', cancelled: '#888' } },
+    { key: 'status', label: 'Status', type: 'badge', badgeColors: { active: 'var(--success)', pending: 'var(--warning)', expired: 'var(--error)', cancelled: 'var(--text-muted)' } },
     { key: 'price_paid', label: 'Paid (JD)' },
     { key: 'visits_used', label: 'Visits' },
     { key: 'wallet_balance', label: 'Wallet' },
@@ -134,5 +134,5 @@ export class SubscriptionsComponent implements OnInit {
     if (confirm('Expire all due subscriptions?')) this.adminService.expireSubscriptions().subscribe(() => this.load());
   }
 
-  statusColor(s: string): string { return ({ active: '#00FF88', pending: '#FFD60A', expired: '#FF3B30', cancelled: '#888' } as Record<string, string>)[s] || '#888'; }
+  statusColor(s: string): string { return ({ active: 'var(--success)', pending: 'var(--warning)', expired: 'var(--error)', cancelled: 'var(--text-muted)' } as Record<string, string>)[s] || 'var(--text-muted)'; }
 }

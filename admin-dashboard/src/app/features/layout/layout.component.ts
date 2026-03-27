@@ -15,7 +15,7 @@ import { SidebarComponent } from '../../shared/components/sidebar/sidebar.compon
     </div>
   `,
   styles: [`
-    .layout { display: flex; min-height: 100vh; background: #000; }
+    .layout { display: flex; min-height: 100vh; background: var(--bg-primary); }
     .content { flex: 1; margin-left: 260px; min-height: 100vh; overflow-y: auto; }
   `]
 })

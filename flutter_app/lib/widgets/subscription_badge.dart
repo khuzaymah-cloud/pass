@@ -10,8 +10,8 @@ class SubscriptionBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (color, bg) = switch (status) {
       'active' => (AppColors.neonPrimary, AppColors.neonGlow),
-      'expired' => (AppColors.error, AppColors.error.withOpacity(0.15)),
-      'pending' => (AppColors.warning, AppColors.warning.withOpacity(0.15)),
+      'expired' => (AppColors.error, AppColors.error.withValues(alpha: 0.15)),
+      'pending' => (AppColors.warning, AppColors.warning.withValues(alpha: 0.15)),
       _ => (AppColors.textHint, AppColors.bgElevated),
     };
 

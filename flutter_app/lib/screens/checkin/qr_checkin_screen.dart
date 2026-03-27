@@ -54,12 +54,12 @@ class QrCheckinScreen extends ConsumerWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
-                      color: AppColors.neonPrimary.withOpacity(0.3),
+                      color: AppColors.neonPrimary.withValues(alpha: 0.3),
                       width: 3,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: AppColors.neonPrimary.withOpacity(0.15),
+                        color: AppColors.neonPrimary.withValues(alpha: 0.15),
                         blurRadius: 30,
                         spreadRadius: 10,
                       ),

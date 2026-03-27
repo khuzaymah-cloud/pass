@@ -24,12 +24,12 @@ import { DashboardStats } from '../../core/models';
         <app-loading-spinner message="Loading stats..." />
       } @else if (stats()) {
         <div class="stats-grid">
-          <app-stat-card icon="👥" label="Total Users" [value]="stats()!.users" color="#00FF88" />
-          <app-stat-card icon="🏋️" label="Partner Gyms" [value]="stats()!.gyms" color="#00D4FF" />
-          <app-stat-card icon="💳" label="Active Subscriptions" [value]="stats()!.active_subscriptions" color="#FFD60A" />
+          <app-stat-card icon="👥" label="Total Users" [value]="stats()!.users" color="var(--accent)" />
+          <app-stat-card icon="🏋️" label="Partner Gyms" [value]="stats()!.gyms" color="var(--info)" />
+          <app-stat-card icon="💳" label="Active Subscriptions" [value]="stats()!.active_subscriptions" color="var(--warning)" />
           <app-stat-card icon="⏳" label="Pending Subscriptions" [value]="stats()!.pending_subscriptions" color="#FF9500" />
           <app-stat-card icon="✅" label="Total Check-ins" [value]="stats()!.total_checkins" color="#AF52DE" />
-          <app-stat-card icon="💰" label="Total Revenue (JD)" [value]="stats()!.total_revenue" color="#00FF88" />
+          <app-stat-card icon="💰" label="Total Revenue (JD)" [value]="stats()!.total_revenue" color="var(--accent)" />
         </div>
 
         <div class="quick-actions">
@@ -63,23 +63,23 @@ import { DashboardStats } from '../../core/models';
   styles: [`
     .page { padding: 32px; }
     .page-header { margin-bottom: 32px; }
-    .page-header h1 { color: #fff; font-size: 28px; margin: 0; }
-    .page-header p { color: #888; margin-top: 4px; }
+    .page-header h1 { color: var(--text-primary); font-size: 28px; margin: 0; }
+    .page-header p { color: var(--text-muted); margin-top: 4px; }
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
       gap: 16px;
       margin-bottom: 40px;
     }
-    .quick-actions h2 { color: #fff; font-size: 20px; margin-bottom: 16px; }
+    .quick-actions h2 { color: var(--text-primary); font-size: 20px; margin-bottom: 16px; }
     .actions-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 12px;
     }
     .action-card {
-      background: #111;
-      border: 1px solid #222;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 20px;
       display: flex;
@@ -92,8 +92,8 @@ import { DashboardStats } from '../../core/models';
       transition: all 0.2s;
     }
     .action-card:hover {
-      border-color: #00FF88;
-      color: #00FF88;
+      border-color: var(--accent);
+      color: var(--accent);
       transform: translateY(-2px);
     }
     .action-card span:first-child { font-size: 28px; }

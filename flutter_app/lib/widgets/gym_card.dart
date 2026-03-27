@@ -68,7 +68,7 @@ class GymCard extends StatelessWidget {
                     children: [
                       NeonBadge(label: gym.tier),
                       const SizedBox(width: AppSpacing.sm),
-                      Icon(
+                      const Icon(
                         Icons.star_rounded,
                         color: AppColors.warning,
                         size: 16,

@@ -116,41 +116,41 @@ import { User } from '../../core/models';
   styles: [`
     .page { padding: 32px; }
     .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-    .page-header h1 { color: #fff; font-size: 24px; margin: 0; }
+    .page-header h1 { color: var(--text-primary); font-size: 24px; margin: 0; }
     .filters { display: flex; gap: 8px; align-items: center; }
     .search-input, .filter-select {
-      background: #111; border: 1px solid #333; border-radius: 8px; padding: 8px 12px;
-      color: #fff; font-size: 14px; outline: none;
+      background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 8px 12px;
+      color: var(--text-primary); font-size: 14px; outline: none;
     }
-    .search-input:focus, .filter-select:focus { border-color: #00FF88; }
-    .btn-add { background: #00FF88; color: #000; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 700; cursor: pointer; font-size: 14px; white-space: nowrap; }
+    .search-input:focus, .filter-select:focus { border-color: var(--accent); }
+    .btn-add { background: var(--accent); color: var(--bg-primary); border: none; border-radius: 8px; padding: 8px 16px; font-weight: 700; cursor: pointer; font-size: 14px; white-space: nowrap; }
     .btn-add:hover { opacity: 0.9; }
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-    .modal { background: #111; border: 1px solid #222; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #222; }
-    .modal-header h2 { color: #fff; font-size: 20px; margin: 0; }
-    .close-btn { background: none; border: none; color: #888; font-size: 20px; cursor: pointer; }
-    .close-btn:hover { color: #fff; }
+    .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+    .modal-header h2 { color: var(--text-primary); font-size: 20px; margin: 0; }
+    .close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
+    .close-btn:hover { color: var(--text-primary); }
     .modal-body { padding: 24px; }
     .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
     .detail-item { display: flex; flex-direction: column; gap: 4px; }
-    .label { color: #888; font-size: 12px; font-weight: 600; text-transform: uppercase; }
-    .value { color: #fff; font-size: 14px; }
+    .label { color: var(--text-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; }
+    .value { color: var(--text-primary); font-size: 14px; }
     .id-val { font-size: 11px; color: #666; word-break: break-all; }
     .badge { font-weight: 700; }
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
     .form-group { display: flex; flex-direction: column; gap: 6px; }
-    .form-group label { color: #888; font-size: 12px; font-weight: 600; }
-    .form-group input, .form-group select { background: #0a0a0a; border: 1px solid #333; border-radius: 8px; padding: 10px 12px; color: #fff; font-size: 14px; outline: none; }
-    .form-group input:focus, .form-group select:focus { border-color: #00FF88; }
+    .form-group label { color: var(--text-muted); font-size: 12px; font-weight: 600; }
+    .form-group input, .form-group select { background: var(--bg-input); border: 1px solid var(--border-light); border-radius: 8px; padding: 10px 12px; color: var(--text-primary); font-size: 14px; outline: none; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
     .form-group input:disabled { opacity: 0.5; }
-    .form-error { background: rgba(255,59,48,0.1); border: 1px solid rgba(255,59,48,0.3); color: #FF3B30; padding: 8px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
+    .form-error { background: var(--error-bg); border: 1px solid var(--error-border); color: var(--error); padding: 8px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; }
     .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
-    .btn-cancel { background: #222; border: 1px solid #333; border-radius: 8px; padding: 10px 20px; color: #888; cursor: pointer; font-size: 14px; }
-    .btn-save { background: #00FF88; color: #000; border: none; border-radius: 8px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 14px; }
+    .btn-cancel { background: var(--border); border: 1px solid var(--border-light); border-radius: 8px; padding: 10px 20px; color: var(--text-muted); cursor: pointer; font-size: 14px; }
+    .btn-save { background: var(--accent); color: var(--bg-primary); border: none; border-radius: 8px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 14px; }
     .btn-save:disabled { opacity: 0.5; }
-    .btn-edit { background: #222; border: 1px solid #00D4FF; border-radius: 8px; padding: 8px 16px; color: #00D4FF; cursor: pointer; font-size: 13px; }
-    .btn-danger { background: #222; border: 1px solid #FF3B30; border-radius: 8px; padding: 8px 16px; color: #FF3B30; cursor: pointer; font-size: 13px; }
+    .btn-edit { background: var(--border); border: 1px solid var(--info); border-radius: 8px; padding: 8px 16px; color: var(--info); cursor: pointer; font-size: 13px; }
+    .btn-danger { background: var(--border); border: 1px solid var(--error); border-radius: 8px; padding: 8px 16px; color: var(--error); cursor: pointer; font-size: 13px; }
   `]
 })
 export class UsersComponent implements OnInit {
@@ -170,7 +170,7 @@ export class UsersComponent implements OnInit {
   columns: TableColumn[] = [
     { key: 'full_name', label: 'Name' },
     { key: 'phone', label: 'Phone' },
-    { key: 'role', label: 'Role', type: 'badge', badgeColors: { member: '#00FF88', gym_partner: '#00D4FF', admin: '#FFD60A', super_admin: '#FF3B30' } },
+    { key: 'role', label: 'Role', type: 'badge', badgeColors: { member: 'var(--role-member)', gym_partner: 'var(--role-gym-partner)', admin: 'var(--role-admin)', super_admin: 'var(--role-super-admin)' } },
     { key: 'is_active', label: 'Active', type: 'boolean' },
     { key: 'created_at', label: 'Joined', type: 'date' },
     { key: 'id', label: 'Actions', type: 'actions' },
@@ -257,7 +257,7 @@ export class UsersComponent implements OnInit {
   closeModal(): void { this.showModal.set(false); this.selectedUser.set(null); this.saving.set(false); }
 
   roleBadge(role: string): string {
-    const m: Record<string, string> = { member: '#00FF88', gym_partner: '#00D4FF', admin: '#FFD60A', super_admin: '#FF3B30' };
-    return m[role] || '#888';
+    const m: Record<string, string> = { member: 'var(--role-member)', gym_partner: 'var(--role-gym-partner)', admin: 'var(--role-admin)', super_admin: 'var(--role-super-admin)' };
+    return m[role] || 'var(--text-muted)';
   }
 }

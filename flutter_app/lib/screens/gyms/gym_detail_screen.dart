@@ -27,13 +27,14 @@ class GymDetailScreen extends ConsumerWidget {
       body: gymAsync.when(
         data: (gym) {
           final sub = activeSub.valueOrNull;
-          final canAccess =
+          // Server validates tier access; kept for future UI use
+          final _ =
               sub != null &&
               sub.isActive &&
               _tierOrder.indexOf(gym.tier) <=
                   _tierOrder.indexOf(
                     sub.planId,
-                  ); // simplified; server validates
+                  );
           return CustomScrollView(
             slivers: [
               SliverAppBar(
@@ -42,7 +43,7 @@ class GymDetailScreen extends ConsumerWidget {
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(gym.name(lang)),
                   background: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -72,7 +73,7 @@ class GymDetailScreen extends ConsumerWidget {
                         children: [
                           NeonBadge(label: gym.tier),
                           const SizedBox(width: AppSpacing.sm),
-                          Icon(
+                          const Icon(
                             Icons.star_rounded,
                             color: AppColors.warning,
                             size: 18,

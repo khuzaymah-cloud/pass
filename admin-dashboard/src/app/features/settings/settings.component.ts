@@ -97,34 +97,34 @@ import { environment } from '../../../environments/environment';
   styles: [`
     .page { padding: 32px; }
     .page-header { margin-bottom: 32px; }
-    .page-header h1 { color: #fff; font-size: 24px; margin: 0; }
-    .page-header p { color: #888; margin-top: 4px; }
+    .page-header h1 { color: var(--text-primary); font-size: 24px; margin: 0; }
+    .page-header p { color: var(--text-muted); margin-top: 4px; }
     .links-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 12px; margin-bottom: 40px; }
     .link-card {
-      background: #111; border: 1px solid #222; border-radius: 12px; padding: 16px 20px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 20px;
       display: flex; align-items: center; gap: 16px;
     }
     .link-icon { font-size: 28px; min-width: 40px; text-align: center; }
     .link-info { flex: 1; overflow: hidden; }
-    .link-info h3 { color: #fff; font-size: 14px; margin: 0 0 4px; }
+    .link-info h3 { color: var(--text-primary); font-size: 14px; margin: 0 0 4px; }
     .link {
-      color: #00FF88; font-size: 13px; text-decoration: none;
+      color: var(--accent); font-size: 13px; text-decoration: none;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block;
     }
     .link:hover { text-decoration: underline; }
     .copy-btn {
-      background: #1a1a1a; border: 1px solid #333; border-radius: 8px; padding: 6px 12px;
-      color: #888; cursor: pointer; font-size: 13px; white-space: nowrap;
+      background: var(--bg-elevated); border: 1px solid var(--border-light); border-radius: 8px; padding: 6px 12px;
+      color: var(--text-muted); cursor: pointer; font-size: 13px; white-space: nowrap;
     }
-    .copy-btn:hover { border-color: #00FF88; color: #00FF88; }
-    .info-section h2 { color: #fff; font-size: 20px; margin-bottom: 16px; }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .info-section h2 { color: var(--text-primary); font-size: 20px; margin-bottom: 16px; }
     .info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
     .info-item {
-      background: #111; border: 1px solid #222; border-radius: 8px; padding: 12px 16px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px;
       display: flex; justify-content: space-between; align-items: center;
     }
-    .info-label { color: #888; font-size: 13px; }
-    .info-value { color: #fff; font-size: 14px; font-weight: 600; }
+    .info-label { color: var(--text-muted); font-size: 13px; }
+    .info-value { color: var(--text-primary); font-size: 14px; font-weight: 600; }
   `]
 })
 export class SettingsComponent {

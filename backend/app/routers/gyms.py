@@ -1,16 +1,187 @@
 from typing import List, Optional
-from fastapi import APIRouter, Depends, Query
+from datetime import date, datetime, timezone
+from fastapi import APIRouter, Depends, Query, HTTPException, status
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, func
 
 from app.database import get_db
 from app.dependencies import get_country, get_current_user, require_gym_partner
 from app.models.country import Country
 from app.models.user import User
+from app.models.gym import Gym
+from app.models.checkin import Checkin
+from app.models.subscription import Subscription
+from app.models.plan import Plan
 from app.schemas.gym import GymOut, GymCreate, GymUpdate
-from app.services import gym_service
+from app.services import gym_service, checkin_service, subscription_service, plan_service
 
 router = APIRouter()
 
+
+class ScanCheckinRequest(BaseModel):
+    user_id: str
+    subscription_id: str
+
+
+# ─── Gym partner endpoints (must be before /{gym_id}) ───
+
+@router.get("/my-gym", response_model=GymOut)
+async def get_my_gym(
+    user: User = Depends(require_gym_partner),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Gym).where(Gym.partner_id == user.id, Gym.deleted_at.is_(None))
+    )
+    gym = result.scalar_one_or_none()
+    if not gym:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No gym linked to your account")
+    return gym
+
+
+@router.get("/my-gym/stats")
+async def get_my_gym_stats(
+    user: User = Depends(require_gym_partner),
+    db: AsyncSession = Depends(get_db),
+):
+    result = await db.execute(
+        select(Gym).where(Gym.partner_id == user.id, Gym.deleted_at.is_(None))
+    )
+    gym = result.scalar_one_or_none()
+    if not gym:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No gym linked to your account")
+
+    today = date.today()
+    now = datetime.now(timezone.utc)
+    month_start = today.replace(day=1)
+
+    # Today's visits
+    today_res = await db.execute(
+        select(func.count(Checkin.id)).where(
+            Checkin.gym_id == gym.id,
+            func.date(Checkin.checked_in_at) == today,
+            Checkin.status == "completed",
+        )
+    )
+    visits_today = today_res.scalar() or 0
+
+    # This month's visits
+    month_res = await db.execute(
+        select(func.count(Checkin.id)).where(
+            Checkin.gym_id == gym.id,
+            func.date(Checkin.checked_in_at) >= month_start,
+            Checkin.status == "completed",
+        )
+    )
+    visits_month = month_res.scalar() or 0
+
+    # Total all-time visits
+    total_res = await db.execute(
+        select(func.count(Checkin.id)).where(
+            Checkin.gym_id == gym.id,
+            Checkin.status == "completed",
+        )
+    )
+    visits_total = total_res.scalar() or 0
+
+    # This month's earnings
+    earnings_res = await db.execute(
+        select(func.coalesce(func.sum(Checkin.daily_rate_paid), 0)).where(
+            Checkin.gym_id == gym.id,
+            func.date(Checkin.checked_in_at) >= month_start,
+            Checkin.status == "completed",
+        )
+    )
+    earnings_month = float(earnings_res.scalar() or 0)
+
+    # Recent check-ins (last 20)
+    recent_res = await db.execute(
+        select(
+            Checkin.id,
+            Checkin.checked_in_at,
+            Checkin.daily_rate_paid,
+            Checkin.plan_tier,
+            User.full_name,
+            User.phone,
+        )
+        .join(User, Checkin.user_id == User.id)
+        .where(Checkin.gym_id == gym.id, Checkin.status == "completed")
+        .order_by(Checkin.checked_in_at.desc())
+        .limit(20)
+    )
+    recent = [
+        {
+            "id": str(r.id),
+            "checked_in_at": r.checked_in_at.isoformat(),
+            "daily_rate_paid": float(r.daily_rate_paid),
+            "plan_tier": r.plan_tier,
+            "member_name": r.full_name,
+            "member_phone": r.phone,
+        }
+        for r in recent_res.all()
+    ]
+
+    return {
+        "gym_id": str(gym.id),
+        "gym_name": gym.name_en,
+        "visits_today": visits_today,
+        "visits_month": visits_month,
+        "visits_total": visits_total,
+        "earnings_month": earnings_month,
+        "recent_checkins": recent,
+    }
+
+
+@router.post("/scan-checkin")
+async def scan_checkin(
+    body: ScanCheckinRequest,
+    user: User = Depends(require_gym_partner),
+    db: AsyncSession = Depends(get_db),
+):
+    # Find the gym partner's gym
+    result = await db.execute(
+        select(Gym).where(Gym.partner_id == user.id, Gym.deleted_at.is_(None))
+    )
+    gym = result.scalar_one_or_none()
+    if not gym:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No gym linked to your account")
+
+    # Get the member
+    member = await db.get(User, body.user_id)
+    if not member or not member.is_active:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Member not found")
+
+    # Get the subscription
+    sub = await db.get(Subscription, body.subscription_id)
+    if not sub or sub.user_id != member.id:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Subscription not found")
+    if sub.status != "active":
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Subscription is not active")
+    if subscription_service.is_expired(sub):
+        sub.status = "expired"
+        await db.flush()
+        await db.commit()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Subscription has expired")
+
+    plan = await plan_service.get_plan_by_id(str(sub.plan_id), db)
+    try:
+        checkin = await checkin_service.process_checkin(member, gym, sub, plan, db)
+        await db.commit()
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+    return {
+        "status": "success",
+        "member_name": member.full_name,
+        "plan_tier": plan.tier,
+        "visits_remaining": sub.visits_remaining,
+        "daily_rate_paid": float(checkin.daily_rate_paid),
+    }
+
+
+# ─── Public endpoints ───
 
 @router.get("", response_model=List[GymOut])
 async def list_gyms(

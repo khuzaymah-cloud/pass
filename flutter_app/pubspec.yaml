@@ -36,6 +36,7 @@ dependencies:
 
   # QR
   qr_flutter: ^4.1.0
+  mobile_scanner: ^6.0.2
 
   # Code gen
   json_annotation: ^4.8.1

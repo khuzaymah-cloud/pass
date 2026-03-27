@@ -6,8 +6,8 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="stat-card" [style.border-color]="color + '33'">
-      <div class="stat-icon" [style.background]="color + '1a'" [style.color]="color">
+    <div class="stat-card" [style.border-color]="'color-mix(in srgb, ' + color + ' 20%, transparent)'">
+      <div class="stat-icon" [style.background]="'color-mix(in srgb, ' + color + ' 10%, transparent)'" [style.color]="color">
         {{ icon }}
       </div>
       <div class="stat-info">
@@ -18,8 +18,8 @@ import { CommonModule } from '@angular/common';
   `,
   styles: [`
     .stat-card {
-      background: #111;
-      border: 1px solid #222;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
       border-radius: 12px;
       padding: 20px;
       display: flex;
@@ -41,13 +41,13 @@ import { CommonModule } from '@angular/common';
       font-size: 22px;
     }
     .stat-info { display: flex; flex-direction: column; }
-    .stat-value { font-size: 24px; font-weight: 700; color: #fff; }
-    .stat-label { font-size: 13px; color: #888; margin-top: 2px; }
+    .stat-value { font-size: 24px; font-weight: 700; color: var(--text-primary); }
+    .stat-label { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
   `]
 })
 export class StatCardComponent {
   @Input() icon = '';
   @Input() label = '';
   @Input() value: string | number = 0;
-  @Input() color = '#00FF88';
+  @Input() color = 'var(--accent)';
 }

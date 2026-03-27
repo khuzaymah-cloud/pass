@@ -49,8 +49,8 @@ interface NavItem {
     .sidebar {
       width: 260px;
       min-height: 100vh;
-      background: #0a0a0a;
-      border-right: 1px solid #1a1a1a;
+      background: var(--bg-input);
+      border-right: 1px solid var(--bg-elevated);
       display: flex;
       flex-direction: column;
       transition: width 0.3s ease;
@@ -65,7 +65,7 @@ interface NavItem {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #1a1a1a;
+      border-bottom: 1px solid var(--bg-elevated);
     }
     .logo {
       display: flex;
@@ -73,8 +73,8 @@ interface NavItem {
       gap: 10px;
     }
     .logo-icon {
-      background: #00FF88;
-      color: #000;
+      background: var(--accent);
+      color: var(--bg-primary);
       font-weight: 800;
       font-size: 16px;
       width: 36px;
@@ -85,7 +85,7 @@ interface NavItem {
       justify-content: center;
     }
     .logo-text {
-      color: #fff;
+      color: var(--text-primary);
       font-size: 18px;
       font-weight: 700;
       white-space: nowrap;
@@ -99,7 +99,7 @@ interface NavItem {
       padding: 4px 8px;
       border-radius: 6px;
     }
-    .toggle-btn:hover { background: #1a1a1a; color: #fff; }
+    .toggle-btn:hover { background: var(--bg-elevated); color: var(--text-primary); }
     .sidebar-nav {
       flex: 1;
       padding: 12px 8px;
@@ -113,7 +113,7 @@ interface NavItem {
       gap: 12px;
       padding: 10px 12px;
       border-radius: 8px;
-      color: #888;
+      color: var(--text-muted);
       text-decoration: none;
       font-size: 14px;
       transition: all 0.2s;
@@ -123,12 +123,12 @@ interface NavItem {
       width: 100%;
       text-align: left;
     }
-    .nav-item:hover { background: #1a1a1a; color: #fff; }
-    .nav-item.active { background: rgba(0, 255, 136, 0.1); color: #00FF88; }
+    .nav-item:hover { background: var(--bg-elevated); color: var(--text-primary); }
+    .nav-item.active { background: var(--accent-bg); color: var(--accent); }
     .nav-icon { font-size: 18px; min-width: 24px; text-align: center; }
     .nav-label { white-space: nowrap; }
-    .sidebar-footer { padding: 12px 8px; border-top: 1px solid #1a1a1a; }
-    .logout-btn:hover { background: rgba(255, 59, 48, 0.1); color: #FF3B30; }
+    .sidebar-footer { padding: 12px 8px; border-top: 1px solid var(--bg-elevated); }
+    .logout-btn:hover { background: var(--error-bg); color: var(--error); }
   `]
 })
 export class SidebarComponent {

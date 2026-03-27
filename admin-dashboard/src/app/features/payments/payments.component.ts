@@ -41,7 +41,7 @@ import { Payment } from '../../core/models';
                 <div class="detail-item"><span class="label">Amount</span><span class="value">{{ selected()!.amount_local }} {{ selected()!.currency_code }}</span></div>
                 <div class="detail-item"><span class="label">VAT Rate</span><span class="value">{{ selected()!.vat_rate }}%</span></div>
                 <div class="detail-item"><span class="label">VAT Amount</span><span class="value">{{ selected()!.vat_amount }} {{ selected()!.currency_code }}</span></div>
-                <div class="detail-item"><span class="label">Total Charged</span><span class="value" style="color:#00FF88;font-weight:700">{{ selected()!.total_charged }} {{ selected()!.currency_code }}</span></div>
+                <div class="detail-item"><span class="label">Total Charged</span><span class="value" style="color:var(--accent);font-weight:700">{{ selected()!.total_charged }} {{ selected()!.currency_code }}</span></div>
                 <div class="detail-item"><span class="label">Gateway</span><span class="value">{{ selected()!.gateway }}</span></div>
                 <div class="detail-item"><span class="label">Gateway Ref</span><span class="value">{{ selected()!.gateway_ref || '—' }}</span></div>
                 <div class="detail-item"><span class="label">Status</span><span class="value badge" [style.color]="statusColor(selected()!.status)">{{ selected()!.status }}</span></div>
@@ -57,18 +57,18 @@ import { Payment } from '../../core/models';
   styles: [`
     .page { padding: 32px; }
     .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
-    .page-header h1 { color: #fff; font-size: 24px; margin: 0; }
-    .filter-select { background: #111; border: 1px solid #333; border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 14px; outline: none; }
+    .page-header h1 { color: var(--text-primary); font-size: 24px; margin: 0; }
+    .filter-select { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 8px 12px; color: var(--text-primary); font-size: 14px; outline: none; }
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-    .modal { background: #111; border: 1px solid #222; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #222; }
-    .modal-header h2 { color: #fff; font-size: 20px; margin: 0; }
-    .close-btn { background: none; border: none; color: #888; font-size: 20px; cursor: pointer; }
+    .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+    .modal-header h2 { color: var(--text-primary); font-size: 20px; margin: 0; }
+    .close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
     .modal-body { padding: 24px; }
     .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .detail-item { display: flex; flex-direction: column; gap: 4px; }
-    .label { color: #888; font-size: 12px; font-weight: 600; text-transform: uppercase; }
-    .value { color: #fff; font-size: 14px; } .id-val { font-size: 11px; color: #666; word-break: break-all; }
+    .label { color: var(--text-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; }
+    .value { color: var(--text-primary); font-size: 14px; } .id-val { font-size: 11px; color: #666; word-break: break-all; }
     .badge { font-weight: 700; }
   `]
 })
@@ -85,7 +85,7 @@ export class PaymentsComponent implements OnInit {
     { key: 'amount_local', label: 'Amount' },
     { key: 'currency_code', label: 'Currency' },
     { key: 'gateway', label: 'Gateway' },
-    { key: 'status', label: 'Status', type: 'badge', badgeColors: { success: '#00FF88', pending: '#FFD60A', failed: '#FF3B30' } },
+    { key: 'status', label: 'Status', type: 'badge', badgeColors: { success: 'var(--success)', pending: 'var(--warning)', failed: 'var(--error)' } },
     { key: 'paid_at', label: 'Paid At', type: 'date' },
     { key: 'created_at', label: 'Created', type: 'date' },
     { key: 'id', label: 'Actions', type: 'actions' },
@@ -108,5 +108,5 @@ export class PaymentsComponent implements OnInit {
     if (item && (event.action === 'view' || event.action === 'edit')) { this.selected.set(item); this.showModal.set(true); }
   }
 
-  statusColor(s: string): string { return ({ success: '#00FF88', pending: '#FFD60A', failed: '#FF3B30' } as Record<string, string>)[s] || '#888'; }
+  statusColor(s: string): string { return ({ success: 'var(--success)', pending: 'var(--warning)', failed: 'var(--error)' } as Record<string, string>)[s] || 'var(--text-muted)'; }
 }

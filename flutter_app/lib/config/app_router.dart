@@ -15,6 +15,8 @@ import '../screens/subscription/my_subscription_screen.dart';
 import '../screens/checkin/qr_checkin_screen.dart';
 import '../screens/profile/profile_screen.dart';
 import '../screens/settings/settings_screen.dart';
+import '../screens/gym_partner/gym_partner_home_screen.dart';
+import '../screens/gym_partner/gym_partner_scan_screen.dart';
 import '../providers/auth_provider.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
@@ -25,9 +27,18 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) {
       final isLoggedIn = authState.valueOrNull?.isLoggedIn ?? false;
       final isAuthRoute = state.matchedLocation.startsWith('/auth');
+      final isPartnerRoute = state.matchedLocation.startsWith('/partner');
+      final user = authState.valueOrNull?.user;
+      final isGymPartner = user?.role == 'gym_partner';
 
       if (!isLoggedIn && !isAuthRoute) return '/auth/login';
-      if (isLoggedIn && isAuthRoute) return '/';
+      if (isLoggedIn && isAuthRoute) {
+        return isGymPartner ? '/partner' : '/';
+      }
+      // Redirect gym partners away from member routes
+      if (isLoggedIn && isGymPartner && !isPartnerRoute) return '/partner';
+      // Redirect members away from partner routes
+      if (isLoggedIn && !isGymPartner && isPartnerRoute) return '/';
       return null;
     },
     routes: [
@@ -39,7 +50,16 @@ final routerProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/auth/register', builder: (_, __) => const RegisterScreen()),
 
-      // ─── Main shell ───
+      // ─── Gym Partner shell ───
+      ShellRoute(
+        builder: (_, __, child) => _PartnerShell(child: child),
+        routes: [
+          GoRoute(path: '/partner', builder: (_, __) => const GymPartnerHomeScreen()),
+          GoRoute(path: '/partner/scan', builder: (_, __) => const GymPartnerScanScreen()),
+        ],
+      ),
+
+      // ─── Member shell ───
       ShellRoute(
         builder: (_, __, child) => _MainShell(child: child),
         routes: [
@@ -106,6 +126,40 @@ class _BottomNav extends StatelessWidget {
         BottomNavigationBarItem(icon: Icon(Icons.qr_code_scanner_rounded), label: 'Check In'),
         BottomNavigationBarItem(icon: Icon(Icons.card_membership_rounded), label: 'Plan'),
         BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Profile'),
+      ],
+    );
+  }
+}
+
+class _PartnerShell extends StatelessWidget {
+  final Widget child;
+  const _PartnerShell({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: child,
+      bottomNavigationBar: _PartnerBottomNav(),
+    );
+  }
+}
+
+class _PartnerBottomNav extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final location = GoRouterState.of(context).matchedLocation;
+    final index = location == '/partner/scan' ? 1 : 0;
+
+    return BottomNavigationBar(
+      currentIndex: index,
+      type: BottomNavigationBarType.fixed,
+      onTap: (i) {
+        final routes = ['/partner', '/partner/scan'];
+        context.go(routes[i]);
+      },
+      items: const [
+        BottomNavigationBarItem(icon: Icon(Icons.dashboard_rounded), label: 'Dashboard'),
+        BottomNavigationBarItem(icon: Icon(Icons.qr_code_scanner_rounded), label: 'Scan'),
       ],
     );
   }

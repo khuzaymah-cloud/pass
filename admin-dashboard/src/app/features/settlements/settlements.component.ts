@@ -40,8 +40,8 @@ import { Settlement } from '../../core/models';
                 <div class="detail-item"><span class="label">ID</span><span class="value id-val">{{ selected()!.id }}</span></div>
                 <div class="detail-item"><span class="label">Gym ID</span><span class="value id-val">{{ selected()!.gym_id }}</span></div>
                 <div class="detail-item"><span class="label">Total Visits</span><span class="value">{{ selected()!.total_visits }}</span></div>
-                <div class="detail-item"><span class="label">Total Amount</span><span class="value" style="color:#00FF88;font-weight:700">{{ selected()!.total_amount }} JD</span></div>
-                <div class="detail-item"><span class="label">Status</span><span class="value badge" [style.color]="selected()!.status === 'paid' ? '#00FF88' : '#FFD60A'">{{ selected()!.status }}</span></div>
+                <div class="detail-item"><span class="label">Total Amount</span><span class="value" style="color:var(--accent);font-weight:700">{{ selected()!.total_amount }} JD</span></div>
+                <div class="detail-item"><span class="label">Status</span><span class="value badge" [style.color]="selected()!.status === 'paid' ? 'var(--success)' : 'var(--warning)'">{{ selected()!.status }}</span></div>
                 <div class="detail-item"><span class="label">Period</span><span class="value">{{ selected()!.period_start }} — {{ selected()!.period_end }}</span></div>
                 <div class="detail-item"><span class="label">Paid At</span><span class="value">{{ selected()!.paid_at || '—' }}</span></div>
               </div>
@@ -59,23 +59,23 @@ import { Settlement } from '../../core/models';
   styles: [`
     .page { padding: 32px; }
     .page-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
-    .page-header h1 { color: #fff; font-size: 24px; margin: 0; }
+    .page-header h1 { color: var(--text-primary); font-size: 24px; margin: 0; }
     .filters { display: flex; gap: 8px; }
-    .filter-select { background: #111; border: 1px solid #333; border-radius: 8px; padding: 8px 12px; color: #fff; font-size: 14px; outline: none; }
-    .btn-action { background: #00FF88; color: #000; border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600; cursor: pointer; font-size: 13px; }
+    .filter-select { background: var(--bg-card); border: 1px solid var(--border-light); border-radius: 8px; padding: 8px 12px; color: var(--text-primary); font-size: 14px; outline: none; }
+    .btn-action { background: var(--accent); color: var(--bg-primary); border: none; border-radius: 8px; padding: 8px 16px; font-weight: 600; cursor: pointer; font-size: 13px; }
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-    .modal { background: #111; border: 1px solid #222; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #222; }
-    .modal-header h2 { color: #fff; font-size: 20px; margin: 0; }
-    .close-btn { background: none; border: none; color: #888; font-size: 20px; cursor: pointer; }
+    .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+    .modal-header h2 { color: var(--text-primary); font-size: 20px; margin: 0; }
+    .close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
     .modal-body { padding: 24px; }
     .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
     .detail-item { display: flex; flex-direction: column; gap: 4px; }
-    .label { color: #888; font-size: 12px; font-weight: 600; text-transform: uppercase; }
-    .value { color: #fff; font-size: 14px; } .id-val { font-size: 11px; color: #666; word-break: break-all; }
+    .label { color: var(--text-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; }
+    .value { color: var(--text-primary); font-size: 14px; } .id-val { font-size: 11px; color: #666; word-break: break-all; }
     .badge { font-weight: 700; }
     .modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
-    .btn-pay { background: #00FF88; color: #000; border: none; border-radius: 8px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 14px; }
+    .btn-pay { background: var(--accent); color: var(--bg-primary); border: none; border-radius: 8px; padding: 10px 20px; font-weight: 700; cursor: pointer; font-size: 14px; }
   `]
 })
 export class SettlementsComponent implements OnInit {
@@ -90,7 +90,7 @@ export class SettlementsComponent implements OnInit {
     { key: 'gym_id', label: 'Gym ID' },
     { key: 'total_visits', label: 'Visits' },
     { key: 'total_amount', label: 'Amount (JD)' },
-    { key: 'status', label: 'Status', type: 'badge', badgeColors: { pending: '#FFD60A', paid: '#00FF88' } },
+    { key: 'status', label: 'Status', type: 'badge', badgeColors: { pending: 'var(--warning)', paid: 'var(--success)' } },
     { key: 'period_start', label: 'Period Start' },
     { key: 'period_end', label: 'Period End' },
     { key: 'paid_at', label: 'Paid At', type: 'date' },

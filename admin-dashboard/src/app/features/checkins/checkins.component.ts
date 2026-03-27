@@ -32,7 +32,7 @@ import { Checkin } from '../../core/models';
                 <div class="detail-item"><span class="label">Subscription ID</span><span class="value id-val">{{ selected()!.subscription_id }}</span></div>
                 <div class="detail-item"><span class="label">Plan Tier</span><span class="value badge">{{ selected()!.plan_tier }}</span></div>
                 <div class="detail-item"><span class="label">Rate Paid</span><span class="value">{{ selected()!.daily_rate_paid }} JD</span></div>
-                <div class="detail-item"><span class="label">Status</span><span class="value badge" [style.color]="selected()!.status === 'completed' ? '#00FF88' : '#FFD60A'">{{ selected()!.status }}</span></div>
+                <div class="detail-item"><span class="label">Status</span><span class="value badge" [style.color]="selected()!.status === 'completed' ? 'var(--success)' : 'var(--warning)'">{{ selected()!.status }}</span></div>
                 <div class="detail-item"><span class="label">Checked In</span><span class="value">{{ selected()!.checked_in_at | date:'medium' }}</span></div>
                 <div class="detail-item"><span class="label">Checked Out</span><span class="value">{{ selected()!.checked_out_at ? (selected()!.checked_out_at | date:'medium') : '—' }}</span></div>
                 <div class="detail-item"><span class="label">QR Token</span><span class="value id-val">{{ selected()!.qr_token }}</span></div>
@@ -44,17 +44,17 @@ import { Checkin } from '../../core/models';
     }
   `,
   styles: [`
-    .page { padding: 32px; } .page-header h1 { color: #fff; font-size: 24px; margin: 0 0 24px; }
+    .page { padding: 32px; } .page-header h1 { color: var(--text-primary); font-size: 24px; margin: 0 0 24px; }
     .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000; }
-    .modal { background: #111; border: 1px solid #222; border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
-    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid #222; }
-    .modal-header h2 { color: #fff; font-size: 20px; margin: 0; }
-    .close-btn { background: none; border: none; color: #888; font-size: 20px; cursor: pointer; }
+    .modal { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto; }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); }
+    .modal-header h2 { color: var(--text-primary); font-size: 20px; margin: 0; }
+    .close-btn { background: none; border: none; color: var(--text-muted); font-size: 20px; cursor: pointer; }
     .modal-body { padding: 24px; }
     .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .detail-item { display: flex; flex-direction: column; gap: 4px; }
-    .label { color: #888; font-size: 12px; font-weight: 600; text-transform: uppercase; }
-    .value { color: #fff; font-size: 14px; } .id-val { font-size: 11px; color: #666; word-break: break-all; }
+    .label { color: var(--text-muted); font-size: 12px; font-weight: 600; text-transform: uppercase; }
+    .value { color: var(--text-primary); font-size: 14px; } .id-val { font-size: 11px; color: #666; word-break: break-all; }
     .badge { font-weight: 700; }
   `]
 })
@@ -67,9 +67,9 @@ export class CheckinsComponent implements OnInit {
   columns: TableColumn[] = [
     { key: 'user_id', label: 'User ID' },
     { key: 'gym_id', label: 'Gym ID' },
-    { key: 'plan_tier', label: 'Plan Tier', type: 'badge', badgeColors: { silver: '#888', gold: '#FFD60A', platinum: '#AF52DE', diamond: '#00D4FF' } },
+    { key: 'plan_tier', label: 'Plan Tier', type: 'badge', badgeColors: { silver: 'var(--text-muted)', gold: 'var(--warning)', platinum: '#AF52DE', diamond: 'var(--info)' } },
     { key: 'daily_rate_paid', label: 'Rate Paid' },
-    { key: 'status', label: 'Status', type: 'badge', badgeColors: { completed: '#00FF88', pending: '#FFD60A' } },
+    { key: 'status', label: 'Status', type: 'badge', badgeColors: { completed: 'var(--success)', pending: 'var(--warning)' } },
     { key: 'checked_in_at', label: 'Time', type: 'date' },
     { key: 'id', label: 'Actions', type: 'actions' },
   ];

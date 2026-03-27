@@ -23,12 +23,12 @@ import { CommonModule } from '@angular/common';
     .spinner {
       width: 36px;
       height: 36px;
-      border: 3px solid #333;
-      border-top-color: #00FF88;
+      border: 3px solid var(--border-light);
+      border-top-color: var(--accent);
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
     }
-    p { color: #888; font-size: 14px; }
+    p { color: var(--text-muted); font-size: 14px; }
     @keyframes spin { to { transform: rotate(360deg); } }
   `]
 })

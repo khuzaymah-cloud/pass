@@ -61,7 +61,7 @@ class PlanCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '${plan.priceLocal.toStringAsFixed(0)}',
+                  plan.priceLocal.toStringAsFixed(0),
                   style: const TextStyle(
                     color: AppColors.neonPrimary,
                     fontSize: 36,

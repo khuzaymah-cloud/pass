@@ -32,5 +32,5 @@ class AppColors {
 
   // ─── Glass card ───
   static Color glassCardBg(bool isDark) =>
-      isDark ? bgCard.withOpacity(0.72) : lightBgCard.withOpacity(0.85);
+      isDark ? bgCard.withValues(alpha: 0.72) : lightBgCard.withValues(alpha: 0.85);
 }

@@ -29,12 +29,12 @@ export interface TableColumn {
                 <td>
                   @switch (col.type) {
                     @case ('badge') {
-                      <span class="badge" [style.background]="getBadgeColor(col, row[col.key]) + '22'" [style.color]="getBadgeColor(col, row[col.key])">
+                      <span class="badge" [style.background]="'color-mix(in srgb, ' + getBadgeColor(col, row[col.key]) + ' 13%, transparent)'" [style.color]="getBadgeColor(col, row[col.key])">
                         {{ row[col.key] }}
                       </span>
                     }
                     @case ('boolean') {
-                      <span class="badge" [style.background]="row[col.key] ? '#00FF8822' : '#FF3B3022'" [style.color]="row[col.key] ? '#00FF88' : '#FF3B30'">
+                      <span class="badge" [style.background]="row[col.key] ? 'var(--accent-bg)' : 'var(--error-bg)'" [style.color]="row[col.key] ? 'var(--accent)' : 'var(--error)'">
                         {{ row[col.key] ? 'Yes' : 'No' }}
                       </span>
                     }
@@ -67,8 +67,8 @@ export interface TableColumn {
     .table-wrapper {
       overflow-x: auto;
       border-radius: 12px;
-      border: 1px solid #1a1a1a;
-      background: #111;
+      border: 1px solid var(--bg-elevated);
+      background: var(--bg-card);
     }
     .data-table {
       width: 100%;
@@ -78,21 +78,21 @@ export interface TableColumn {
     th {
       text-align: left;
       padding: 12px 16px;
-      color: #888;
+      color: var(--text-muted);
       font-weight: 600;
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-bottom: 1px solid #1a1a1a;
-      background: #0a0a0a;
+      border-bottom: 1px solid var(--bg-elevated);
+      background: var(--bg-input);
       white-space: nowrap;
     }
     td {
       padding: 12px 16px;
       color: #ccc;
-      border-bottom: 1px solid #1a1a1a;
+      border-bottom: 1px solid var(--bg-elevated);
     }
-    tr:hover td { background: #1a1a1a; }
+    tr:hover td { background: var(--bg-elevated); }
     .badge {
       padding: 4px 10px;
       border-radius: 6px;
@@ -109,8 +109,8 @@ export interface TableColumn {
     }
     .actions { display: flex; gap: 6px; }
     .action-btn {
-      background: #1a1a1a;
-      border: 1px solid #333;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border-light);
       border-radius: 6px;
       cursor: pointer;
       padding: 4px 8px;
@@ -133,6 +133,6 @@ export class DataTableComponent {
 
   getBadgeColor(col: TableColumn, value: unknown): string {
     const colors = col.badgeColors ?? {};
-    return colors[String(value)] ?? '#888';
+    return colors[String(value)] ?? 'var(--text-muted)';
   }
 }

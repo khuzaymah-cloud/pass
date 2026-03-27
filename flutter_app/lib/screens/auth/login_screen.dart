@@ -75,7 +75,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           child: Column(
             children: [
               // Top bar
-              Align(
+              const Align(
                 alignment: AlignmentDirectional.centerEnd,
                 child: LanguageSwitcher(),
               ),
@@ -84,14 +84,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               Container(
                 width: 120,
                 height: 120,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
                     colors: [AppColors.neonGlow, Colors.transparent],
                     radius: 1.5,
                   ),
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
                     'GP',
                     style: TextStyle(
