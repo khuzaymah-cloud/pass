@@ -44,7 +44,7 @@ class QrCheckinScreen extends ConsumerWidget {
             }
 
             final qrData =
-                '1pass:${user?.id ?? ""}:${sub.id}:${DateTime.now().millisecondsSinceEpoch}';
+                'gympass:${user?.id ?? ""}:${sub.id}:${DateTime.now().millisecondsSinceEpoch}';
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

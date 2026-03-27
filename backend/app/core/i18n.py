@@ -12,7 +12,7 @@ TRANSLATIONS = {
         "otp_rate_limited": "Too many OTP requests. Try again later.",
         "payment_placeholder": "Would charge {amount} {currency} for user {user_id}.",
         "settlement_created": "Settlement for {gym} created: {amount} {currency}.",
-        "welcome": "Welcome to 1Pass!",
+        "welcome": "Welcome to GymPass!",
     },
     "ar": {
         "subscription_active": "خطة {plan} الخاصة بك مفعّلة! {visits} زيارة بانتظارك.",
@@ -27,7 +27,7 @@ TRANSLATIONS = {
         "otp_rate_limited": "طلبات كثيرة. حاول مجدداً لاحقاً.",
         "payment_placeholder": "سيتم خصم {amount} {currency} للمستخدم {user_id}.",
         "settlement_created": "تمت تسوية {gym}: {amount} {currency}.",
-        "welcome": "مرحباً بك في 1Pass!",
+        "welcome": "مرحباً بك في GymPass!",
     },
 }
 

@@ -101,13 +101,13 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'1Pass'**
+  /// **'GymPass'**
   String get appName;
 
   /// No description provided for @tagline.
   ///
   /// In en, this message translates to:
-  /// **'One subscription. Every gym.'**
+  /// **'One Subscription, Play Anywhere.'**
   String get tagline;
 
   /// No description provided for @login.

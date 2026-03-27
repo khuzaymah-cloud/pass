@@ -15,9 +15,9 @@ class Settings(BaseSettings):
     REDIS_URL: str = "redis://redis:6379/0"
 
     JAWWALSMS_API_KEY: str = ""
-    JAWWALSMS_SENDER: str = "1Pass"
+    JAWWALSMS_SENDER: str = "GymPass"
     UNIFONIC_APP_SID: str = ""
-    UNIFONIC_SENDER: str = "1Pass"
+    UNIFONIC_SENDER: str = "GymPass"
     TWILIO_ACCOUNT_SID: str = ""
     TWILIO_AUTH_TOKEN: str = ""
     TWILIO_FROM_NUMBER: str = ""

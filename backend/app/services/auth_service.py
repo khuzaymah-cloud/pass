@@ -45,7 +45,7 @@ async def send_otp(phone: str, country: Country, db: AsyncSession) -> dict:
         return {"message": "OTP sent", "phone": phone, "debug_otp": code}
 
     from app.utils.sms import send_sms
-    await send_sms(phone, f"Your 1Pass code is: {code}", country)
+    await send_sms(phone, f"Your GymPass code is: {code}", country)
     return {"message": "OTP sent", "phone": phone}
 
 

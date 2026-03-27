@@ -5,7 +5,7 @@ from app.config import settings
 from app.routers import auth, users, gyms, plans, subscriptions, checkins, payments, admin
 
 app = FastAPI(
-    title="1Pass ME API",
+    title="GymPass API",
     description="Fitness aggregator platform for the Middle East",
     version="1.0.0",
     docs_url="/api/docs",
@@ -32,4 +32,4 @@ app.include_router(admin.router, prefix="/api/v1/admin", tags=["Admin"])
 
 @app.get("/api/health")
 async def health():
-    return {"status": "ok", "service": "1pass-me"}
+    return {"status": "ok", "service": "gympass"}

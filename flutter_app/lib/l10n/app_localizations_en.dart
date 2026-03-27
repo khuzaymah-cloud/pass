@@ -9,10 +9,10 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => '1Pass';
+  String get appName => 'GymPass';
 
   @override
-  String get tagline => 'One subscription. Every gym.';
+  String get tagline => 'One Subscription, Play Anywhere.';
 
   @override
   String get login => 'Login';

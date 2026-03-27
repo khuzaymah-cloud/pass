@@ -17,8 +17,8 @@ interface NavItem {
     <aside class="sidebar" [class.collapsed]="collapsed">
       <div class="sidebar-header">
         <div class="logo">
-          <span class="logo-icon">1P</span>
-          <span class="logo-text" *ngIf="!collapsed">1Pass Admin</span>
+          <span class="logo-icon">GP</span>
+          <span class="logo-text" *ngIf="!collapsed">GymPass Admin</span>
         </div>
         <button class="toggle-btn" (click)="collapsed = !collapsed">
           <span>{{ collapsed ? '→' : '←' }}</span>

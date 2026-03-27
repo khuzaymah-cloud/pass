@@ -10,7 +10,7 @@ import { environment } from '../../../environments/environment';
     <div class="page">
       <div class="page-header">
         <h1>App Links & Settings</h1>
-        <p>Public URLs and deep links for the 1Pass mobile app</p>
+        <p>Public URLs and deep links for the GymPass mobile app</p>
       </div>
 
       <div class="links-grid">

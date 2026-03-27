@@ -12,9 +12,9 @@ import { AuthService } from '../../core/services/auth.service';
     <div class="login-page">
       <div class="login-card">
         <div class="logo">
-          <span class="logo-icon">1P</span>
-          <h1>1Pass Admin</h1>
-          <p>Control Panel</p>
+          <span class="logo-icon">GP</span>
+          <h1>GymPass Admin</h1>
+          <p>One Subscription, Play Anywhere</p>
         </div>
 
         @if (!otpSent()) {

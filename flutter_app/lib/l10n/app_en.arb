@@ -1,7 +1,7 @@
 {
   "@@locale": "en",
-  "appName": "1Pass",
-  "tagline": "One subscription. Every gym.",
+  "appName": "GymPass",
+  "tagline": "One Subscription, Play Anywhere.",
   "login": "Login",
   "sendOtp": "Send OTP",
   "verifyOtp": "Verify OTP",

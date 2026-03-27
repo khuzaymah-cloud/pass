@@ -6,9 +6,9 @@ import { AuthResponse } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly TOKEN_KEY = '1pass_admin_token';
-  private readonly REFRESH_KEY = '1pass_admin_refresh';
-  private readonly USER_KEY = '1pass_admin_user';
+  private readonly TOKEN_KEY = 'gympass_admin_token';
+  private readonly REFRESH_KEY = 'gympass_admin_refresh';
+  private readonly USER_KEY = 'gympass_admin_user';
 
   private http = inject(HttpClient);
   private router = inject(Router);

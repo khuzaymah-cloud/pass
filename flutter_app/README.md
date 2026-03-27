@@ -1,4 +1,4 @@
-# onepass_app
+# GymPass
 
 A new Flutter project.
 

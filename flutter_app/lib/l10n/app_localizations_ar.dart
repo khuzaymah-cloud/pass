@@ -9,10 +9,10 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appName => '1Pass';
+  String get appName => 'GymPass';
 
   @override
-  String get tagline => 'اشتراك واحد. كل الأندية.';
+  String get tagline => 'اشتراك واحد، العب في أي مكان.';
 
   @override
   String get login => 'تسجيل الدخول';

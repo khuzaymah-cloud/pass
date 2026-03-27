@@ -1,7 +1,7 @@
 {
   "@@locale": "ar",
-  "appName": "1Pass",
-  "tagline": "اشتراك واحد. كل الأندية.",
+  "appName": "GymPass",
+  "tagline": "اشتراك واحد، العب في أي مكان.",
   "login": "تسجيل الدخول",
   "sendOtp": "إرسال رمز التحقق",
   "verifyOtp": "تأكيد الرمز",
