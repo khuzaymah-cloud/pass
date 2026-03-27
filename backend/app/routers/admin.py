@@ -1,7 +1,9 @@
 from datetime import date, timedelta, datetime, timezone
-from typing import List, Optional
+from decimal import Decimal
+from typing import List, Optional, Dict
 
 from fastapi import APIRouter, Depends, Query, HTTPException, status
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, desc
 
@@ -25,6 +27,85 @@ from app.schemas.payment import PaymentOut
 from app.services import settlement_service, subscription_service
 
 router = APIRouter()
+
+
+# ── Request Bodies ───────────────────────────────────────────────
+
+class CreateUserBody(BaseModel):
+    phone: str
+    full_name: str
+    email: Optional[str] = None
+    role: str = "member"
+    gender: Optional[str] = None
+
+
+class UpdateUserBody(BaseModel):
+    role: Optional[str] = None
+    is_active: Optional[bool] = None
+    full_name: Optional[str] = None
+    email: Optional[str] = None
+    gender: Optional[str] = None
+
+
+class CreateGymBody(BaseModel):
+    name_en: str
+    name_ar: Optional[str] = None
+    tier: str = "standard"
+    address: str
+    lat: float
+    lng: float
+    phone: Optional[str] = None
+    description_en: Optional[str] = None
+    description_ar: Optional[str] = None
+    opening_hours: Dict = {}
+    amenities: Optional[List[str]] = None
+    categories: Optional[List[str]] = None
+    is_active: bool = False
+
+
+class UpdateGymBody(BaseModel):
+    name_en: Optional[str] = None
+    name_ar: Optional[str] = None
+    tier: Optional[str] = None
+    address: Optional[str] = None
+    lat: Optional[float] = None
+    lng: Optional[float] = None
+    phone: Optional[str] = None
+    description_en: Optional[str] = None
+    description_ar: Optional[str] = None
+    opening_hours: Optional[Dict] = None
+    amenities: Optional[List[str]] = None
+    categories: Optional[List[str]] = None
+    is_active: Optional[bool] = None
+    is_featured: Optional[bool] = None
+
+
+class CreatePlanBody(BaseModel):
+    tier: str
+    name_en: str
+    name_ar: str
+    price_local: str
+    max_visits: int = 30
+    validity_days: int = 30
+    gym_tier_access: str
+    features_en: List[str] = []
+    features_ar: List[str] = []
+    is_active: bool = True
+    sort_order: int = 0
+
+
+class UpdatePlanBody(BaseModel):
+    tier: Optional[str] = None
+    name_en: Optional[str] = None
+    name_ar: Optional[str] = None
+    price_local: Optional[str] = None
+    max_visits: Optional[int] = None
+    validity_days: Optional[int] = None
+    gym_tier_access: Optional[str] = None
+    features_en: Optional[List[str]] = None
+    features_ar: Optional[List[str]] = None
+    is_active: Optional[bool] = None
+    sort_order: Optional[int] = None
 
 
 # ── Dashboard Stats ──────────────────────────────────────────────
@@ -89,6 +170,27 @@ async def list_users(
     return list(result.scalars().all())
 
 
+@router.post("/users", response_model=UserOut, status_code=status.HTTP_201_CREATED)
+async def create_user(
+    body: CreateUserBody,
+    admin: User = Depends(require_admin),
+    country: Country = Depends(get_country),
+    db: AsyncSession = Depends(get_db),
+):
+    user = User(
+        phone=body.phone,
+        full_name=body.full_name,
+        email=body.email,
+        role=body.role,
+        gender=body.gender,
+        country_id=country.id,
+    )
+    db.add(user)
+    await db.flush()
+    await db.refresh(user)
+    return user
+
+
 @router.get("/users/{user_id}", response_model=UserOut)
 async def get_user(
     user_id: str,
@@ -104,18 +206,23 @@ async def get_user(
 @router.patch("/users/{user_id}")
 async def update_user(
     user_id: str,
-    role: Optional[str] = None,
-    is_active: Optional[bool] = None,
+    body: UpdateUserBody,
     admin: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     user = await db.get(User, user_id)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    if role is not None:
-        user.role = role
-    if is_active is not None:
-        user.is_active = is_active
+    if body.role is not None:
+        user.role = body.role
+    if body.is_active is not None:
+        user.is_active = body.is_active
+    if body.full_name is not None:
+        user.full_name = body.full_name
+    if body.email is not None:
+        user.email = body.email
+    if body.gender is not None:
+        user.gender = body.gender
     await db.flush()
     return {"id": str(user.id), "role": user.role, "is_active": user.is_active}
 
@@ -158,6 +265,64 @@ async def list_gyms(
     q = q.order_by(desc(Gym.created_at)).offset(skip).limit(limit)
     result = await db.execute(q)
     return list(result.scalars().all())
+
+
+@router.post("/gyms", response_model=GymOut, status_code=status.HTTP_201_CREATED)
+async def create_gym(
+    body: CreateGymBody,
+    admin: User = Depends(require_admin),
+    country: Country = Depends(get_country),
+    db: AsyncSession = Depends(get_db),
+):
+    gym = Gym(
+        country_id=country.id,
+        name_en=body.name_en,
+        name_ar=body.name_ar,
+        tier=body.tier,
+        address=body.address,
+        lat=body.lat,
+        lng=body.lng,
+        phone=body.phone,
+        description_en=body.description_en,
+        description_ar=body.description_ar,
+        opening_hours=body.opening_hours,
+        amenities=body.amenities,
+        categories=body.categories,
+        is_active=body.is_active,
+    )
+    db.add(gym)
+    await db.flush()
+    await db.refresh(gym)
+    return gym
+
+
+@router.get("/gyms/{gym_id}", response_model=GymOut)
+async def get_gym(
+    gym_id: str,
+    admin: User = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    gym = await db.get(Gym, gym_id)
+    if not gym or gym.deleted_at:
+        raise HTTPException(status_code=404, detail="Gym not found")
+    return gym
+
+
+@router.patch("/gyms/{gym_id}")
+async def update_gym(
+    gym_id: str,
+    body: UpdateGymBody,
+    admin: User = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    gym = await db.get(Gym, gym_id)
+    if not gym or gym.deleted_at:
+        raise HTTPException(status_code=404, detail="Gym not found")
+    for field, value in body.model_dump(exclude_unset=True).items():
+        setattr(gym, field, value)
+    await db.flush()
+    await db.refresh(gym)
+    return gym
 
 
 @router.patch("/gyms/{gym_id}/approve")
@@ -203,25 +368,55 @@ async def list_plans(
     return list(result.scalars().all())
 
 
+@router.post("/plans", response_model=PlanOut, status_code=status.HTTP_201_CREATED)
+async def create_plan(
+    body: CreatePlanBody,
+    admin: User = Depends(require_admin),
+    country: Country = Depends(get_country),
+    db: AsyncSession = Depends(get_db),
+):
+    price = Decimal(body.price_local)
+    plan = Plan(
+        country_id=country.id,
+        tier=body.tier,
+        name_en=body.name_en,
+        name_ar=body.name_ar,
+        price_local=price,
+        daily_rate=price / body.max_visits,
+        max_visits=body.max_visits,
+        validity_days=body.validity_days,
+        gym_tier_access=body.gym_tier_access,
+        features_en=body.features_en,
+        features_ar=body.features_ar,
+        is_active=body.is_active,
+        sort_order=body.sort_order,
+    )
+    db.add(plan)
+    await db.flush()
+    await db.refresh(plan)
+    return plan
+
+
 @router.patch("/plans/{plan_id}")
 async def update_plan(
     plan_id: str,
-    is_active: Optional[bool] = None,
-    price_local: Optional[str] = None,
+    body: UpdatePlanBody,
     admin: User = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     plan = await db.get(Plan, plan_id)
     if not plan:
         raise HTTPException(status_code=404, detail="Plan not found")
-    if is_active is not None:
-        plan.is_active = is_active
-    if price_local is not None:
-        from decimal import Decimal
-        plan.price_local = Decimal(price_local)
+    updates = body.model_dump(exclude_unset=True)
+    if "price_local" in updates:
+        updates["price_local"] = Decimal(updates["price_local"])
+    for field, value in updates.items():
+        setattr(plan, field, value)
+    if "price_local" in updates or "max_visits" in updates:
         plan.daily_rate = plan.price_local / plan.max_visits
     await db.flush()
-    return {"id": str(plan.id), "is_active": plan.is_active, "price_local": str(plan.price_local)}
+    await db.refresh(plan)
+    return plan
 
 
 # ── Subscriptions ────────────────────────────────────────────────

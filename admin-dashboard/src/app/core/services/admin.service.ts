@@ -31,14 +31,15 @@ export class AdminService {
     return this.http.get<User>(`${this.base}/users/${id}`, { headers: this.headers });
   }
 
-  updateUser(id: string, data: { role?: string; is_active?: boolean }) {
-    let params = new HttpParams();
-    if (data.role !== undefined) params = params.set('role', data.role);
-    if (data.is_active !== undefined) params = params.set('is_active', String(data.is_active));
-    return this.http.patch(`${this.base}/users/${id}`, null, { params, headers: this.headers });
+  createUser(data: { phone: string; full_name: string; email?: string; role?: string; gender?: string }): Observable<User> {
+    return this.http.post<User>(`${this.base}/users`, data, { headers: this.headers });
   }
 
-  deleteUser(id: string) {
+  updateUser(id: string, data: { role?: string; is_active?: boolean; full_name?: string; email?: string; gender?: string }): Observable<unknown> {
+    return this.http.patch(`${this.base}/users/${id}`, data, { headers: this.headers });
+  }
+
+  deleteUser(id: string): Observable<unknown> {
     return this.http.delete(`${this.base}/users/${id}`, { headers: this.headers });
   }
 
@@ -51,11 +52,23 @@ export class AdminService {
     return this.http.get<Gym[]>(`${this.base}/gyms`, { params, headers: this.headers });
   }
 
-  approveGym(id: string) {
+  getGym(id: string): Observable<Gym> {
+    return this.http.get<Gym>(`${this.base}/gyms/${id}`, { headers: this.headers });
+  }
+
+  createGym(data: Record<string, unknown>): Observable<Gym> {
+    return this.http.post<Gym>(`${this.base}/gyms`, data, { headers: this.headers });
+  }
+
+  updateGym(id: string, data: Record<string, unknown>): Observable<unknown> {
+    return this.http.patch(`${this.base}/gyms/${id}`, data, { headers: this.headers });
+  }
+
+  approveGym(id: string): Observable<unknown> {
     return this.http.patch(`${this.base}/gyms/${id}/approve`, null, { headers: this.headers });
   }
 
-  deleteGym(id: string) {
+  deleteGym(id: string): Observable<unknown> {
     return this.http.delete(`${this.base}/gyms/${id}`, { headers: this.headers });
   }
 
@@ -64,11 +77,12 @@ export class AdminService {
     return this.http.get<Plan[]>(`${this.base}/plans`, { headers: this.headers });
   }
 
-  updatePlan(id: string, data: { is_active?: boolean; price_local?: string }) {
-    let params = new HttpParams();
-    if (data.is_active !== undefined) params = params.set('is_active', String(data.is_active));
-    if (data.price_local !== undefined) params = params.set('price_local', data.price_local);
-    return this.http.patch(`${this.base}/plans/${id}`, null, { params, headers: this.headers });
+  createPlan(data: Record<string, unknown>): Observable<Plan> {
+    return this.http.post<Plan>(`${this.base}/plans`, data, { headers: this.headers });
+  }
+
+  updatePlan(id: string, data: Record<string, unknown>): Observable<unknown> {
+    return this.http.patch(`${this.base}/plans/${id}`, data, { headers: this.headers });
   }
 
   // Subscriptions
@@ -78,11 +92,11 @@ export class AdminService {
     return this.http.get<Subscription[]>(`${this.base}/subscriptions`, { params, headers: this.headers });
   }
 
-  activateSubscription(id: string) {
+  activateSubscription(id: string): Observable<unknown> {
     return this.http.post(`${this.base}/subscriptions/${id}/activate`, null, { headers: this.headers });
   }
 
-  expireSubscriptions() {
+  expireSubscriptions(): Observable<unknown> {
     return this.http.post(`${this.base}/expire-subscriptions`, null, { headers: this.headers });
   }
 
@@ -106,7 +120,7 @@ export class AdminService {
     return this.http.get<Country[]>(`${this.base}/countries`, { headers: this.headers });
   }
 
-  toggleCountry(id: number, is_active: boolean) {
+  toggleCountry(id: number, is_active: boolean): Observable<unknown> {
     return this.http.patch(`${this.base}/countries/${id}`, null, {
       params: new HttpParams().set('is_active', String(is_active)),
       headers: this.headers,
@@ -120,11 +134,11 @@ export class AdminService {
     return this.http.get<Settlement[]>(`${this.base}/settlements`, { params, headers: this.headers });
   }
 
-  runSettlement() {
+  runSettlement(): Observable<unknown> {
     return this.http.post(`${this.base}/settlements/run`, null, { headers: this.headers });
   }
 
-  markSettlementPaid(id: string) {
+  markSettlementPaid(id: string): Observable<unknown> {
     return this.http.patch(`${this.base}/settlements/${id}/pay`, null, { headers: this.headers });
   }
 }
