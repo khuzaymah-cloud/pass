@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/app_colors.dart';
@@ -19,6 +20,7 @@ class LoginScreen extends ConsumerStatefulWidget {
 class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _phoneController = TextEditingController();
   bool _isLoading = false;
+  String? _phoneError;
 
   @override
   void dispose() {
@@ -26,10 +28,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
+  bool _isValidPhone(String input) {
+    final digits = input.replaceAll(RegExp(r'\D'), '');
+    return digits.length == 9;
+  }
+
   Future<void> _sendOtp() async {
-    final phone = _phoneController.text.trim();
-    if (phone.isEmpty) return;
-    setState(() => _isLoading = true);
+    final input = _phoneController.text.trim();
+    if (input.isEmpty) {
+      setState(() => _phoneError = 'Please enter your phone number');
+      return;
+    }
+    if (!_isValidPhone(input)) {
+      setState(() => _phoneError = 'Enter exactly 9 digits (e.g. 791234567)');
+      return;
+    }
+    setState(() {
+      _phoneError = null;
+      _isLoading = true;
+    });
+    final digits = input.replaceAll(RegExp(r'\D'), '');
+    final phone = '+962$digits';
     try {
       await ref.read(authStateProvider.notifier).sendOtp(phone);
       if (mounted) context.go('/auth/otp?phone=$phone');
@@ -74,7 +93,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 ),
                 child: Center(
                   child: Text(
-                    '1P',
+                    'GP',
                     style: TextStyle(
                       color: AppColors.neonPrimary,
                       fontSize: 48,
@@ -106,14 +125,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: TextField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,
+                  maxLength: 9,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                    LengthLimitingTextInputFormatter(9),
+                  ],
                   style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 18,
                   ),
                   textDirection: TextDirection.ltr,
+                  onChanged: (_) {
+                    if (_phoneError != null) setState(() => _phoneError = null);
+                  },
+                  onSubmitted: (_) => _sendOtp(),
                   decoration: InputDecoration(
-                    hintText: context.l10n.enterPhone,
+                    hintText: '7XXXXXXXX',
                     hintStyle: const TextStyle(color: AppColors.textHint),
+                    counterText: '',
                     prefixIcon: const Padding(
                       padding: EdgeInsetsDirectional.only(start: 12, end: 8),
                       child: Text(
@@ -130,6 +159,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       minHeight: 0,
                     ),
                     border: InputBorder.none,
+                    errorText: _phoneError,
+                    errorStyle: const TextStyle(color: AppColors.error, fontSize: 12),
                   ),
                 ),
               ),

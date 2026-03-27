@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'subscription.g.dart';
 
+double _toDouble(dynamic v) => v is num ? v.toDouble() : double.parse(v.toString());
+
 @JsonSerializable()
 class Subscription {
   final String id;

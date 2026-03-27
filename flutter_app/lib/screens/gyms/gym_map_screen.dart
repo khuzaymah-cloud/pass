@@ -29,11 +29,8 @@ class _GymMapScreenState extends ConsumerState<GymMapScreen> {
   @override
   Widget build(BuildContext context) {
     final lang = Localizations.localeOf(context).languageCode;
-    final params = <String, dynamic>{
-      if (_selectedTier != null) 'tier': _selectedTier,
-      if (_searchController.text.isNotEmpty) 'search': _searchController.text,
-    };
-    final gyms = ref.watch(gymListProvider(params.isNotEmpty ? params : null));
+    final key = '${_selectedTier ?? ''}|${_searchController.text}';
+    final gyms = ref.watch(gymListProvider(key));
 
     return Scaffold(
       body: SafeArea(

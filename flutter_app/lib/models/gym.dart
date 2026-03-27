@@ -2,6 +2,9 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'gym.g.dart';
 
+double _toDouble(dynamic v) => v is num ? v.toDouble() : double.parse(v.toString());
+int _toInt(dynamic v) => v is int ? v : (v is num ? v.toInt() : int.parse(v.toString()));
+
 @JsonSerializable()
 class Gym {
   final String id;

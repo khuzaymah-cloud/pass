@@ -10,8 +10,8 @@ Gym _$GymFromJson(Map<String, dynamic> json) => Gym(
   descriptionAr: json['description_ar'] as String?,
   tier: json['tier'] as String,
   address: json['address'] as String,
-  lat: (json['lat'] as num).toDouble(),
-  lng: (json['lng'] as num).toDouble(),
+  lat: _toDouble(json['lat']),
+  lng: _toDouble(json['lng']),
   phone: json['phone'] as String?,
   logoUrl: json['logo_url'] as String?,
   coverUrl: json['cover_url'] as String?,
@@ -25,9 +25,9 @@ Gym _$GymFromJson(Map<String, dynamic> json) => Gym(
       .toList(),
   isActive: json['is_active'] as bool? ?? true,
   isFeatured: json['is_featured'] as bool? ?? false,
-  rating: (json['rating'] as num?)?.toDouble() ?? 0.0,
-  totalReviews: (json['total_reviews'] as num?)?.toInt() ?? 0,
-  countryId: (json['country_id'] as num).toInt(),
+  rating: _toDouble(json['rating'] ?? 0.0),
+  totalReviews: _toInt(json['total_reviews'] ?? 0),
+  countryId: _toInt(json['country_id']),
 );
 
 Map<String, dynamic> _$GymToJson(Gym instance) => <String, dynamic>{

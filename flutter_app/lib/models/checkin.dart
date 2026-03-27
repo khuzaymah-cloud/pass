@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'checkin.g.dart';
 
+double _toDouble(dynamic v) => v is num ? v.toDouble() : double.parse(v.toString());
+
 @JsonSerializable()
 class Checkin {
   final String id;

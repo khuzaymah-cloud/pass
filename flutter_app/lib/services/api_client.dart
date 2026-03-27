@@ -1,13 +1,47 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import '../config/env.dart';
+
+// Web-safe token storage
+class _TokenStore {
+  static final _TokenStore _instance = _TokenStore._();
+  factory _TokenStore() => _instance;
+  _TokenStore._();
+
+  final FlutterSecureStorage? _secure = kIsWeb ? null : const FlutterSecureStorage();
+  final Map<String, String> _memStore = {};
+
+  Future<void> write(String key, String value) async {
+    if (_secure != null) {
+      await _secure.write(key: key, value: value);
+    } else {
+      _memStore[key] = value;
+    }
+  }
+
+  Future<String?> read(String key) async {
+    if (_secure != null) {
+      return await _secure.read(key: key);
+    }
+    return _memStore[key];
+  }
+
+  Future<void> delete(String key) async {
+    if (_secure != null) {
+      await _secure.delete(key: key);
+    } else {
+      _memStore.remove(key);
+    }
+  }
+}
 
 class ApiClient {
   static final ApiClient _instance = ApiClient._internal();
   factory ApiClient() => _instance;
 
   late final Dio dio;
-  final _storage = const FlutterSecureStorage();
+  final _storage = _TokenStore();
 
   String _countryCode = 'JO';
   String _lang = 'en';
@@ -26,7 +60,7 @@ class ApiClient {
     dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
-          final token = await _storage.read(key: 'access_token');
+          final token = await _storage.read('access_token');
           if (token != null) {
             options.headers['Authorization'] = 'Bearer $token';
           }
@@ -39,7 +73,7 @@ class ApiClient {
             final refreshed = await _refreshToken();
             if (refreshed) {
               final opts = error.requestOptions;
-              final token = await _storage.read(key: 'access_token');
+              final token = await _storage.read('access_token');
               opts.headers['Authorization'] = 'Bearer $token';
               final response = await dio.fetch(opts);
               return handler.resolve(response);
@@ -55,26 +89,26 @@ class ApiClient {
   void setLang(String lang) => _lang = lang;
 
   Future<void> saveTokens(String access, String refresh) async {
-    await _storage.write(key: 'access_token', value: access);
-    await _storage.write(key: 'refresh_token', value: refresh);
+    await _storage.write('access_token', access);
+    await _storage.write('refresh_token', refresh);
   }
 
   Future<void> clearTokens() async {
-    await _storage.delete(key: 'access_token');
-    await _storage.delete(key: 'refresh_token');
+    await _storage.delete('access_token');
+    await _storage.delete('refresh_token');
   }
 
-  Future<String?> getAccessToken() => _storage.read(key: 'access_token');
+  Future<String?> getAccessToken() => _storage.read('access_token');
 
   Future<bool> _refreshToken() async {
     try {
-      final refresh = await _storage.read(key: 'refresh_token');
+      final refresh = await _storage.read('refresh_token');
       if (refresh == null) return false;
       final response = await Dio(
         BaseOptions(baseUrl: Env.apiBaseUrl),
       ).post('/auth/refresh', data: {'refresh_token': refresh});
       final newToken = response.data['access_token'] as String;
-      await _storage.write(key: 'access_token', value: newToken);
+      await _storage.write('access_token', newToken);
       return true;
     } catch (_) {
       await clearTokens();

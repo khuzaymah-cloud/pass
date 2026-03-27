@@ -2,14 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/gym.dart';
 import '../services/gym_service.dart';
 
-final gymListProvider = FutureProvider.family<List<Gym>, Map<String, dynamic>?>(
-  (ref, params) async {
+// Use a simple string key for proper equality: "tier:search"
+final gymListProvider = FutureProvider.family<List<Gym>, String>(
+  (ref, key) async {
     final service = GymService();
-    return service.listGyms(
-      tier: params?['tier'] as String?,
-      featured: params?['featured'] as bool?,
-      search: params?['search'] as String?,
-    );
+    final parts = key.split('|');
+    final tier = parts.isNotEmpty && parts[0].isNotEmpty ? parts[0] : null;
+    final search = parts.length > 1 && parts[1].isNotEmpty ? parts[1] : null;
+    return service.listGyms(tier: tier, search: search);
   },
 );
 

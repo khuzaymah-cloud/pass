@@ -11,7 +11,7 @@ Checkin _$CheckinFromJson(Map<String, dynamic> json) => Checkin(
   checkedInAt: json['checked_in_at'] as String,
   checkedOutAt: json['checked_out_at'] as String?,
   status: json['status'] as String,
-  dailyRatePaid: (json['daily_rate_paid'] as num).toDouble(),
+  dailyRatePaid: _toDouble(json['daily_rate_paid']),
   planTier: json['plan_tier'] as String,
 );
 

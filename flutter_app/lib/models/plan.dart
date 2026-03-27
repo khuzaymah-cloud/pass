@@ -2,6 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'plan.g.dart';
 
+double _toDouble(dynamic v) => v is num ? v.toDouble() : double.parse(v.toString());
+
 @JsonSerializable()
 class Plan {
   final String id;
@@ -12,9 +14,9 @@ class Plan {
   final String nameEn;
   @JsonKey(name: 'name_ar')
   final String nameAr;
-  @JsonKey(name: 'price_local')
+  @JsonKey(name: 'price_local', fromJson: _toDouble)
   final double priceLocal;
-  @JsonKey(name: 'daily_rate')
+  @JsonKey(name: 'daily_rate', fromJson: _toDouble)
   final double dailyRate;
   @JsonKey(name: 'max_visits')
   final int maxVisits;
