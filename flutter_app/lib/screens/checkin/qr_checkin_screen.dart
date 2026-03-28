@@ -16,15 +16,42 @@ class QrCheckinScreen extends ConsumerStatefulWidget {
   ConsumerState<QrCheckinScreen> createState() => _QrCheckinScreenState();
 }
 
-class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
-  final MobileScannerController _controller = MobileScannerController();
+class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
+    with WidgetsBindingObserver {
+  MobileScannerController? _controller;
   bool _isProcessing = false;
+  bool _cameraError = false;
   _CheckinResult? _result;
+
+  void _initScanner() {
+    if (_controller != null) return;
+    _controller = MobileScannerController(
+      detectionSpeed: DetectionSpeed.normal,
+      facing: CameraFacing.back,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
 
   @override
   void dispose() {
-    _controller.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+    _controller?.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_controller == null) return;
+    if (state == AppLifecycleState.paused) {
+      _controller?.stop();
+    } else if (state == AppLifecycleState.resumed && _result == null) {
+      _controller?.start();
+    }
   }
 
   Future<void> _onDetect(BarcodeCapture capture) async {
@@ -36,12 +63,13 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
     if (!qrData.startsWith('1pass-gym:')) return;
 
     setState(() => _isProcessing = true);
-    await _controller.stop();
+    _controller?.stop();
 
     final gymId = qrData.substring('1pass-gym:'.length);
     if (gymId.isEmpty) {
       setState(() {
-        _result = const _CheckinResult(success: false, message: 'رمز QR غير صالح');
+        _result = const _CheckinResult(
+            success: false, message: 'رمز QR غير صالح');
         _isProcessing = false;
       });
       return;
@@ -89,8 +117,9 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
     setState(() {
       _result = null;
       _isProcessing = false;
+      _cameraError = false;
     });
-    _controller.start();
+    _controller?.start();
   }
 
   @override
@@ -103,12 +132,19 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
         child: activeSub.when(
           data: (sub) {
             if (sub == null || !sub.isActive) return _buildNoSub(context);
-            return _result != null
-                ? _buildResult(sub.visitsRemaining, sub.maxVisits)
-                : _buildScanner(context, sub.visitsRemaining, sub.maxVisits, sub.visitsUsed);
+            // Lazy-init scanner only when sub is active
+            _initScanner();
+            if (_result != null) {
+              return _buildResult(sub.visitsRemaining, sub.maxVisits);
+            }
+            return _buildScanner(
+                context, sub.visitsRemaining, sub.maxVisits, sub.visitsUsed);
           },
-          loading: () => const Center(child: CircularProgressIndicator(color: _kBlue)),
-          error: (_, __) => const Center(child: Icon(Icons.error_outline, color: AppColors.error, size: 48)),
+          loading: () => const Center(
+              child: CircularProgressIndicator(color: _kBlue)),
+          error: (_, __) => const Center(
+              child: Icon(Icons.error_outline,
+                  color: AppColors.error, size: 48)),
         ),
       ),
     );
@@ -128,12 +164,16 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
                 color: AppColors.error.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.lock_outline_rounded, color: AppColors.error, size: 48),
+              child: const Icon(Icons.lock_outline_rounded,
+                  color: AppColors.error, size: 48),
             ),
             const SizedBox(height: 24),
             Text(
               context.l10n.subscriptionExpired,
-              style: const TextStyle(color: AppColors.textPrimary, fontSize: 18, fontWeight: FontWeight.w600),
+              style: const TextStyle(
+                  color: AppColors.textPrimary,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
@@ -150,10 +190,13 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _kBlue,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14)),
                   elevation: 0,
                 ),
-                child: Text(context.l10n.plans, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                child: Text(context.l10n.plans,
+                    style: const TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w600)),
               ),
             ),
           ],
@@ -162,7 +205,8 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
     );
   }
 
-  Widget _buildScanner(BuildContext context, int remaining, int max, int used) {
+  Widget _buildScanner(
+      BuildContext context, int remaining, int max, int used) {
     final progress = max > 0 ? used / max : 0.0;
 
     return Column(
@@ -172,14 +216,25 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
           child: Row(
             children: [
-              Container(width: 4, height: 20, decoration: BoxDecoration(color: _kBlue, borderRadius: BorderRadius.circular(2))),
+              Container(
+                  width: 4,
+                  height: 20,
+                  decoration: BoxDecoration(
+                      color: _kBlue,
+                      borderRadius: BorderRadius.circular(2))),
               const SizedBox(width: 8),
-              Text(context.l10n.qrCheckin, style: const TextStyle(color: AppColors.textPrimary, fontSize: 20, fontWeight: FontWeight.w700)),
+              Text(context.l10n.qrCheckin,
+                  style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700)),
             ],
           ),
         ),
         const SizedBox(height: 12),
-        const Text('امسح رمز QR الموجود في النادي', style: TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+        const Text('امسح رمز QR الموجود في النادي',
+            style:
+                TextStyle(color: AppColors.textSecondary, fontSize: 14)),
         const SizedBox(height: 16),
         // Scanner
         Expanded(
@@ -187,22 +242,43 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
-              child: Stack(
-                children: [
-                  MobileScanner(controller: _controller, onDetect: _onDetect),
-                  Center(
-                    child: Container(
-                      width: 260,
-                      height: 260,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: _isProcessing ? AppColors.warning : _kBlue, width: 3),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
+              child: _cameraError
+                  ? _buildCameraError()
+                  : Stack(
+                      children: [
+                        MobileScanner(
+                          controller: _controller!,
+                          onDetect: _onDetect,
+                          errorBuilder: (context, error, child) {
+                            WidgetsBinding.instance
+                                .addPostFrameCallback((_) {
+                              if (mounted && !_cameraError) {
+                                setState(() => _cameraError = true);
+                              }
+                            });
+                            return _buildCameraError();
+                          },
+                        ),
+                        Center(
+                          child: Container(
+                            width: 260,
+                            height: 260,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                  color: _isProcessing
+                                      ? AppColors.warning
+                                      : _kBlue,
+                                  width: 3),
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                        ),
+                        if (_isProcessing)
+                          const Center(
+                              child: CircularProgressIndicator(
+                                  color: _kBlue)),
+                      ],
                     ),
-                  ),
-                  if (_isProcessing) const Center(child: CircularProgressIndicator(color: _kBlue)),
-                ],
-              ),
             ),
           ),
         ),
@@ -224,13 +300,24 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
-                    CircularProgressIndicator(value: progress, strokeWidth: 3, backgroundColor: AppColors.bgElevated, valueColor: const AlwaysStoppedAnimation(_kBlue)),
-                    Text('$remaining', style: const TextStyle(color: _kBlue, fontSize: 14, fontWeight: FontWeight.w700)),
+                    CircularProgressIndicator(
+                        value: progress,
+                        strokeWidth: 3,
+                        backgroundColor: AppColors.bgElevated,
+                        valueColor:
+                            const AlwaysStoppedAnimation(_kBlue)),
+                    Text('$remaining',
+                        style: const TextStyle(
+                            color: _kBlue,
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700)),
                   ],
                 ),
               ),
               const SizedBox(width: 12),
-              Text('$remaining زيارة متبقية من أصل $max', style: const TextStyle(color: AppColors.textSecondary, fontSize: 13)),
+              Text('$remaining زيارة متبقية من أصل $max',
+                  style: const TextStyle(
+                      color: AppColors.textSecondary, fontSize: 13)),
             ],
           ),
         ),
@@ -239,13 +326,52 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.info_outline, color: AppColors.textHint, size: 16),
+              Icon(Icons.info_outline,
+                  color: AppColors.textHint, size: 16),
               SizedBox(width: 6),
-              Text('زيارة واحدة لكل نادي يومياً', style: TextStyle(color: AppColors.textHint, fontSize: 12)),
+              Text('زيارة واحدة لكل نادي يومياً',
+                  style: TextStyle(
+                      color: AppColors.textHint, fontSize: 12)),
             ],
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildCameraError() {
+    return Container(
+      color: AppColors.bgCard,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.videocam_off_rounded,
+                color: AppColors.textSecondary, size: 48),
+            const SizedBox(height: 16),
+            const Text('لا يمكن الوصول إلى الكاميرا',
+                style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600)),
+            const SizedBox(height: 8),
+            const Text('تأكد من منح صلاحية الكاميرا',
+                style: TextStyle(
+                    color: AppColors.textSecondary, fontSize: 13)),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _resetScan,
+              style: ElevatedButton.styleFrom(
+                backgroundColor: _kBlue,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+              ),
+              child: const Text('إعادة المحاولة'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -262,11 +388,23 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
             Container(
               width: 100,
               height: 100,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: statusColor.withValues(alpha: 0.12)),
-              child: Icon(r.success ? Icons.check_circle_rounded : Icons.cancel_rounded, color: statusColor, size: 60),
+              decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: statusColor.withValues(alpha: 0.12)),
+              child: Icon(
+                  r.success
+                      ? Icons.check_circle_rounded
+                      : Icons.cancel_rounded,
+                  color: statusColor,
+                  size: 60),
             ),
             const SizedBox(height: 20),
-            Text(r.message, style: TextStyle(color: statusColor, fontSize: 20, fontWeight: FontWeight.w700), textAlign: TextAlign.center),
+            Text(r.message,
+                style: TextStyle(
+                    color: statusColor,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700),
+                textAlign: TextAlign.center),
             if (r.success && r.gymName != null) ...[
               const SizedBox(height: 24),
               Container(
@@ -280,9 +418,13 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
                   children: [
                     _DetailRow(label: 'النادي', value: r.gymName!),
                     _divider(),
-                    _DetailRow(label: 'الخطة', value: (r.planTier ?? '').toUpperCase()),
+                    _DetailRow(
+                        label: 'الخطة',
+                        value: (r.planTier ?? '').toUpperCase()),
                     _divider(),
-                    _DetailRow(label: 'الزيارات المتبقية', value: '${r.visitsRemaining ?? remaining}'),
+                    _DetailRow(
+                        label: 'الزيارات المتبقية',
+                        value: '${r.visitsRemaining ?? remaining}'),
                   ],
                 ),
               ),
@@ -294,11 +436,14 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
               child: ElevatedButton.icon(
                 onPressed: _resetScan,
                 icon: const Icon(Icons.qr_code_scanner_rounded),
-                label: const Text('مسح آخر', style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600)),
+                label: const Text('مسح آخر',
+                    style: TextStyle(
+                        fontSize: 15, fontWeight: FontWeight.w600)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _kBlue,
                   foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14)),
                   elevation: 0,
                 ),
               ),
@@ -310,9 +455,9 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen> {
   }
 
   Widget _divider() => const Padding(
-    padding: EdgeInsets.symmetric(vertical: 10),
-    child: Divider(color: AppColors.bgElevated, height: 1),
-  );
+        padding: EdgeInsets.symmetric(vertical: 10),
+        child: Divider(color: AppColors.bgElevated, height: 1),
+      );
 }
 
 class _CheckinResult {
@@ -322,7 +467,13 @@ class _CheckinResult {
   final String? planTier;
   final int? visitsRemaining;
   final double? dailyRate;
-  const _CheckinResult({required this.success, required this.message, this.gymName, this.planTier, this.visitsRemaining, this.dailyRate});
+  const _CheckinResult(
+      {required this.success,
+      required this.message,
+      this.gymName,
+      this.planTier,
+      this.visitsRemaining,
+      this.dailyRate});
 }
 
 class _DetailRow extends StatelessWidget {
@@ -335,8 +486,14 @@ class _DetailRow extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
-        Text(value, style: const TextStyle(color: AppColors.textPrimary, fontSize: 14, fontWeight: FontWeight.w600)),
+        Text(label,
+            style: const TextStyle(
+                color: AppColors.textSecondary, fontSize: 14)),
+        Text(value,
+            style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 14,
+                fontWeight: FontWeight.w600)),
       ],
     );
   }
