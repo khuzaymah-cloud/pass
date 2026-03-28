@@ -24,6 +24,10 @@ class ScanCheckinRequest(BaseModel):
     subscription_id: str
 
 
+class MemberCheckinRequest(BaseModel):
+    gym_id: str
+
+
 # ─── Gym partner endpoints (must be before /{gym_id}) ───
 
 @router.get("/my-gym", response_model=GymOut)
@@ -175,6 +179,51 @@ async def scan_checkin(
     return {
         "status": "success",
         "member_name": member.full_name,
+        "plan_tier": plan.tier,
+        "visits_remaining": sub.visits_remaining,
+        "daily_rate_paid": float(checkin.daily_rate_paid),
+    }
+
+
+@router.post("/member-checkin")
+async def member_checkin(
+    body: MemberCheckinRequest,
+    user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Member scans gym QR → checks themselves in."""
+    # Get the gym
+    gym = await db.get(Gym, body.gym_id)
+    if not gym or gym.deleted_at is not None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Gym not found")
+
+    # Get the member's active subscription
+    result = await db.execute(
+        select(Subscription).where(
+            Subscription.user_id == user.id,
+            Subscription.status == "active",
+        ).order_by(Subscription.created_at.desc())
+    )
+    sub = result.scalar_one_or_none()
+    if not sub:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="No active subscription")
+    if subscription_service.is_expired(sub):
+        sub.status = "expired"
+        await db.flush()
+        await db.commit()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Subscription has expired")
+
+    plan = await plan_service.get_plan_by_id(str(sub.plan_id), db)
+    try:
+        checkin = await checkin_service.process_checkin(user, gym, sub, plan, db)
+        await db.commit()
+    except Exception as e:
+        await db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+
+    return {
+        "status": "success",
+        "gym_name": gym.name_en or gym.name_ar,
         "plan_tier": plan.tier,
         "visits_remaining": sub.visits_remaining,
         "daily_rate_paid": float(checkin.daily_rate_paid),

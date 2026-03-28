@@ -101,7 +101,7 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                             color: Colors.white.withValues(alpha: 0.2),
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: const Icon(Icons.qr_code_scanner_rounded,
+                          child: const Icon(Icons.qr_code_2_rounded,
                               color: Colors.white, size: 28),
                         ),
                         const SizedBox(width: 14),
@@ -109,13 +109,13 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('مسح رمز العضو',
+                              Text('عرض رمز QR للنادي',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 17,
                                       fontWeight: FontWeight.w600)),
                               SizedBox(height: 4),
-                              Text('انقر لمسح QR وتسجيل الدخول',
+                              Text('يمسح العضو هذا الرمز لتسجيل دخوله',
                                   style: TextStyle(
                                       color: Colors.white70, fontSize: 13)),
                             ],
