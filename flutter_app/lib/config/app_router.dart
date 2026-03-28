@@ -63,16 +63,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // ─── Member shell (3 tabs) ───
+      // ─── Member shell (3 tabs: Home, QR Scan, Account) ───
       ShellRoute(
         builder: (_, __, child) => _MainShell(child: child),
         routes: [
           GoRoute(path: '/', builder: (_, __) => const HomeScreen()),
-          GoRoute(path: '/plans', builder: (_, __) => const PlansScreen()),
-          GoRoute(path: '/account', builder: (_, __) => const ProfileScreen()),
-          // QR scanner accessible from deep link / programmatic nav
           GoRoute(
               path: '/checkin', builder: (_, __) => const QrCheckinScreen()),
+          GoRoute(path: '/account', builder: (_, __) => const ProfileScreen()),
+          // Sub-pages (no tab)
+          GoRoute(path: '/plans', builder: (_, __) => const PlansScreen()),
           // Sub-pages accessible from tabs
           GoRoute(
             path: '/gyms/:id',
@@ -120,7 +120,7 @@ class _BottomNav extends StatelessWidget {
     final location = GoRouterState.of(context).matchedLocation;
     final index = switch (location) {
       '/' => 0,
-      _ when location.startsWith('/plans') => 1,
+      '/checkin' => 1,
       _
           when location.startsWith('/account') ||
               location.startsWith('/settings') =>
@@ -131,14 +131,15 @@ class _BottomNav extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: index,
       onTap: (i) {
-        final routes = ['/', '/plans', '/account'];
+        final routes = ['/', '/checkin', '/account'];
         context.go(routes[i]);
       },
       items: [
         BottomNavigationBarItem(
             icon: const Icon(Icons.home_rounded), label: context.l10n.home),
         BottomNavigationBarItem(
-            icon: const Icon(Icons.tune_rounded), label: context.l10n.plans),
+            icon: const Icon(Icons.qr_code_scanner_rounded),
+            label: context.l10n.checkIn),
         BottomNavigationBarItem(
             icon: const Icon(Icons.person_rounded),
             label: context.l10n.profile),
