@@ -6,7 +6,6 @@ import '../screens/auth/login_screen.dart';
 import '../screens/auth/otp_screen.dart';
 import '../screens/auth/register_screen.dart';
 import '../screens/home/home_screen.dart';
-import '../screens/gyms/gym_map_screen.dart';
 import '../screens/gyms/gym_detail_screen.dart';
 import '../screens/plans/plans_screen.dart';
 import '../screens/payment/payment_stub_screen.dart';
@@ -18,6 +17,7 @@ import '../screens/settings/settings_screen.dart';
 import '../screens/gym_partner/gym_partner_home_screen.dart';
 import '../screens/gym_partner/gym_partner_scan_screen.dart';
 import '../providers/auth_provider.dart';
+import '../extensions/context_ext.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -35,9 +35,7 @@ final routerProvider = Provider<GoRouter>((ref) {
       if (isLoggedIn && isAuthRoute) {
         return isGymPartner ? '/partner' : '/';
       }
-      // Redirect gym partners away from member routes
       if (isLoggedIn && isGymPartner && !isPartnerRoute) return '/partner';
-      // Redirect members away from partner routes
       if (isLoggedIn && !isGymPartner && isPartnerRoute) return '/';
       return null;
     },
@@ -46,30 +44,40 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/auth/login', builder: (_, __) => const LoginScreen()),
       GoRoute(
         path: '/auth/otp',
-        builder: (_, state) => OtpScreen(phone: state.uri.queryParameters['phone'] ?? ''),
+        builder: (_, state) =>
+            OtpScreen(phone: state.uri.queryParameters['phone'] ?? ''),
       ),
-      GoRoute(path: '/auth/register', builder: (_, __) => const RegisterScreen()),
+      GoRoute(
+          path: '/auth/register', builder: (_, __) => const RegisterScreen()),
 
       // ─── Gym Partner shell ───
       ShellRoute(
         builder: (_, __, child) => _PartnerShell(child: child),
         routes: [
-          GoRoute(path: '/partner', builder: (_, __) => const GymPartnerHomeScreen()),
-          GoRoute(path: '/partner/scan', builder: (_, __) => const GymPartnerScanScreen()),
+          GoRoute(
+              path: '/partner',
+              builder: (_, __) => const GymPartnerHomeScreen()),
+          GoRoute(
+              path: '/partner/scan',
+              builder: (_, __) => const GymPartnerScanScreen()),
         ],
       ),
 
-      // ─── Member shell ───
+      // ─── Member shell (4 tabs) ───
       ShellRoute(
         builder: (_, __, child) => _MainShell(child: child),
         routes: [
           GoRoute(path: '/', builder: (_, __) => const HomeScreen()),
-          GoRoute(path: '/gyms', builder: (_, __) => const GymMapScreen()),
+          GoRoute(path: '/plans', builder: (_, __) => const PlansScreen()),
+          GoRoute(
+              path: '/checkin', builder: (_, __) => const QrCheckinScreen()),
+          GoRoute(path: '/account', builder: (_, __) => const ProfileScreen()),
+          // Sub-pages accessible from tabs
           GoRoute(
             path: '/gyms/:id',
-            builder: (_, state) => GymDetailScreen(gymId: state.pathParameters['id']!),
+            builder: (_, state) =>
+                GymDetailScreen(gymId: state.pathParameters['id']!),
           ),
-          GoRoute(path: '/plans', builder: (_, __) => const PlansScreen()),
           GoRoute(
             path: '/payment-stub',
             builder: (_, state) => PaymentStubScreen(
@@ -77,15 +85,18 @@ final routerProvider = Provider<GoRouter>((ref) {
             ),
           ),
           GoRoute(path: '/success', builder: (_, __) => const SuccessScreen()),
-          GoRoute(path: '/subscription', builder: (_, __) => const MySubscriptionScreen()),
-          GoRoute(path: '/checkin', builder: (_, __) => const QrCheckinScreen()),
-          GoRoute(path: '/profile', builder: (_, __) => const ProfileScreen()),
-          GoRoute(path: '/settings', builder: (_, __) => const SettingsScreen()),
+          GoRoute(
+              path: '/subscription',
+              builder: (_, __) => const MySubscriptionScreen()),
+          GoRoute(
+              path: '/settings', builder: (_, __) => const SettingsScreen()),
         ],
       ),
     ],
   );
 });
+
+// ─── Member Shell ───
 
 class _MainShell extends StatelessWidget {
   final Widget child;
@@ -95,41 +106,51 @@ class _MainShell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: child,
-      bottomNavigationBar: _BottomNav(),
+      bottomNavigationBar: const _BottomNav(),
     );
   }
 }
 
 class _BottomNav extends StatelessWidget {
+  const _BottomNav();
+
   @override
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
     final index = switch (location) {
       '/' => 0,
-      _ when location.startsWith('/gyms') => 1,
+      _ when location.startsWith('/plans') => 1,
       '/checkin' => 2,
-      _ when location.startsWith('/subscription') || location.startsWith('/plans') => 3,
-      _ when location.startsWith('/profile') || location.startsWith('/settings') => 4,
+      _
+          when location.startsWith('/account') ||
+              location.startsWith('/settings') =>
+        3,
       _ => 0,
     };
 
     return BottomNavigationBar(
       currentIndex: index,
-      type: BottomNavigationBarType.fixed,
       onTap: (i) {
-        final routes = ['/', '/gyms', '/checkin', '/subscription', '/profile'];
+        final routes = ['/', '/plans', '/checkin', '/account'];
         context.go(routes[i]);
       },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: 'Home'),
-        BottomNavigationBarItem(icon: Icon(Icons.map_rounded), label: 'Gyms'),
-        BottomNavigationBarItem(icon: Icon(Icons.qr_code_scanner_rounded), label: 'Check In'),
-        BottomNavigationBarItem(icon: Icon(Icons.card_membership_rounded), label: 'Plan'),
-        BottomNavigationBarItem(icon: Icon(Icons.person_rounded), label: 'Profile'),
+      items: [
+        BottomNavigationBarItem(
+            icon: const Icon(Icons.home_rounded), label: context.l10n.home),
+        BottomNavigationBarItem(
+            icon: const Icon(Icons.tune_rounded), label: context.l10n.plans),
+        BottomNavigationBarItem(
+            icon: const Icon(Icons.qr_code_scanner_rounded),
+            label: context.l10n.checkIn),
+        BottomNavigationBarItem(
+            icon: const Icon(Icons.person_rounded),
+            label: context.l10n.profile),
       ],
     );
   }
 }
+
+// ─── Partner Shell ───
 
 class _PartnerShell extends StatelessWidget {
   final Widget child;
@@ -158,8 +179,10 @@ class _PartnerBottomNav extends StatelessWidget {
         context.go(routes[i]);
       },
       items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.dashboard_rounded), label: 'Dashboard'),
-        BottomNavigationBarItem(icon: Icon(Icons.qr_code_scanner_rounded), label: 'Scan'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.dashboard_rounded), label: 'Dashboard'),
+        BottomNavigationBarItem(
+            icon: Icon(Icons.qr_code_scanner_rounded), label: 'Scan'),
       ],
     );
   }

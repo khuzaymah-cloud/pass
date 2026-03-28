@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appName => 'GymPass';
+  String get appName => '1Pass';
 
   @override
   String get tagline => 'اشتراك واحد، العب في أي مكان.';
@@ -181,7 +181,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get subscriptionExpired => 'انتهى اشتراكك';
 
   @override
-  String get profile => 'الملف الشخصي';
+  String get profile => 'الحساب';
 
   @override
   String memberSince(String date) {

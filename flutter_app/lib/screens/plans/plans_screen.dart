@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../config/app_colors.dart';
 import '../../models/plan.dart';
 import '../../models/gym.dart';
 import '../../providers/plan_provider.dart';
 import '../../services/subscription_service.dart';
 import '../../services/gym_service.dart';
 
-const _kBlue = Color(0xFF4361EE);
+const _kBlue = AppColors.accent;
 const _kTiers = ['silver', 'gold', 'platinum', 'diamond'];
 const _kTierLabels = {
   'silver': 'Silver',
@@ -39,7 +40,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
     final gymCounts = ref.watch(gymCountsProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.bgPrimary,
       body: allPlans.when(
         data: (plans) => _buildBody(plans, gymCounts.valueOrNull ?? {}),
         loading: () => const Center(child: CircularProgressIndicator(color: _kBlue)),
@@ -125,16 +126,16 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Gyms Plans',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: Colors.black),
+                  'خطط الأندية',
+                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
                 ),
                 OutlinedButton.icon(
                   onPressed: () => context.push('/subscription'),
                   icon: const Icon(Icons.history, size: 16),
-                  label: const Text('History'),
+                  label: const Text('السجل'),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.black87,
-                    side: BorderSide(color: Colors.grey.shade300),
+                    foregroundColor: AppColors.textPrimary,
+                    side: const BorderSide(color: AppColors.bgElevated),
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                     textStyle: const TextStyle(fontSize: 13),
@@ -143,14 +144,14 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            Row(
+            const Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('✦ ', style: TextStyle(color: _kBlue, fontSize: 16)),
+                Text('✦ ', style: TextStyle(color: _kBlue, fontSize: 16)),
                 Expanded(
                   child: Text(
-                    'Unlimited gym access every month for a fixed fee, with automatic renewal to keep your membership active.',
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 14, height: 1.4),
+                    'وصول غير محدود للأندية شهرياً برسوم ثابتة مع تجديد تلقائي',
+                    style: TextStyle(color: AppColors.textSecondary, fontSize: 14, height: 1.4),
                   ),
                 ),
               ],
@@ -158,13 +159,13 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
               child: CustomPaint(
-                painter: _DashedLinePainter(color: Colors.grey.shade300),
+                painter: _DashedLinePainter(color: AppColors.bgElevated),
                 size: const Size(double.infinity, 1),
               ),
             ),
-            Text(
-              'Pick the Subscription that suits you best.',
-              style: TextStyle(color: Colors.grey.shade500, fontSize: 14),
+            const Text(
+              'اختر الاشتراك الأنسب لك',
+              style: TextStyle(color: AppColors.textHint, fontSize: 14),
             ),
             const SizedBox(height: 12),
           ],
@@ -174,12 +175,12 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
   }
 
   Widget _buildContinueButton(Plan plan) {
-    final durLabel = _selectedDuration == 12 ? '1 Year' : '$_selectedDuration Month${_selectedDuration > 1 ? 's' : ''}';
+    final durLabel = _selectedDuration == 12 ? 'سنة' : '$_selectedDuration ${_selectedDuration > 1 ? 'أشهر' : 'شهر'}';
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
       decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.06), blurRadius: 10, offset: const Offset(0, -2))],
+        color: AppColors.bgSecondary,
+        boxShadow: [BoxShadow(color: AppColors.bgPrimary.withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, -2))],
       ),
       child: SafeArea(
         top: false,
@@ -195,7 +196,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
               elevation: 0,
             ),
             child: Text(
-              'Continue with ${_kTierLabels[_selectedTier]} Plan ($durLabel)',
+              'متابعة مع ${_kTierLabels[_selectedTier]} Plan ($durLabel)',
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
             ),
           ),
@@ -211,7 +212,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
+          SnackBar(content: Text(e.toString()), backgroundColor: AppColors.error),
         );
       }
     }
@@ -221,7 +222,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.bgSecondary,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
@@ -266,10 +267,10 @@ class _PlanTierCard extends StatelessWidget {
         duration: const Duration(milliseconds: 250),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? _kBlue.withValues(alpha: 0.04) : Colors.white,
+          color: isSelected ? _kBlue.withValues(alpha: 0.04) : AppColors.bgCard,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? _kBlue : Colors.grey.shade200,
+            color: isSelected ? _kBlue : AppColors.bgElevated,
             width: isSelected ? 1.5 : 1,
           ),
         ),
@@ -302,7 +303,7 @@ class _PlanTierCard extends StatelessWidget {
                     children: [
                       Text(
                         '$label Plan',
-                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: Colors.black),
+                        style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
                       ),
                       const SizedBox(height: 4),
                       // Gym count badge
@@ -311,19 +312,19 @@ class _PlanTierCard extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade200,
+                            color: AppColors.bgElevated,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Icon(Icons.fitness_center, size: 14, color: Colors.grey.shade600),
+                              const Icon(Icons.fitness_center, size: 14, color: AppColors.textSecondary),
                               const SizedBox(width: 4),
                               Text(
-                                '+$gymCount Gyms',
-                                style: TextStyle(fontSize: 12, color: Colors.grey.shade700, fontWeight: FontWeight.w500),
+                                '+$gymCount أندية',
+                                style: const TextStyle(fontSize: 12, color: AppColors.textSecondary, fontWeight: FontWeight.w500),
                               ),
-                              Icon(Icons.chevron_right, size: 16, color: Colors.grey.shade500),
+                              const Icon(Icons.chevron_right, size: 16, color: AppColors.textHint),
                             ],
                           ),
                         ),
@@ -339,7 +340,7 @@ class _PlanTierCard extends StatelessWidget {
                     shape: BoxShape.circle,
                     color: isSelected ? _kBlue : Colors.transparent,
                     border: Border.all(
-                      color: isSelected ? _kBlue : Colors.grey.shade300,
+                      color: isSelected ? _kBlue : AppColors.bgElevated,
                       width: isSelected ? 0 : 2,
                     ),
                   ),
@@ -351,15 +352,15 @@ class _PlanTierCard extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             // Validity info
-            Row(
+            const Row(
               children: [
-                Icon(Icons.check_circle_outline, size: 14, color: Colors.grey.shade500),
-                const SizedBox(width: 4),
-                Text('Valid for 1 Month', style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
-                Text('  |  ', style: TextStyle(fontSize: 12, color: Colors.grey.shade400)),
-                Icon(Icons.autorenew, size: 14, color: Colors.grey.shade500),
-                const SizedBox(width: 4),
-                Text('Auto renews', style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
+                Icon(Icons.check_circle_outline, size: 14, color: AppColors.textHint),
+                SizedBox(width: 4),
+                Text('صالح لمدة شهر', style: TextStyle(fontSize: 12, color: AppColors.textHint)),
+                Text('  |  ', style: TextStyle(fontSize: 12, color: AppColors.textHint)),
+                Icon(Icons.autorenew, size: 14, color: AppColors.textHint),
+                SizedBox(width: 4),
+                Text('تجديد تلقائي', style: TextStyle(fontSize: 12, color: AppColors.textHint)),
               ],
             ),
             // Expanded: duration picker / Collapsed: starts from
@@ -378,8 +379,8 @@ class _PlanTierCard extends StatelessWidget {
                     final hasDiscount = plan.durationMonths > 1;
                     final perMonth = plan.priceLocal / plan.durationMonths;
                     final durLabel = plan.durationMonths == 12
-                        ? '1 Year'
-                        : '${plan.durationMonths} Month${plan.durationMonths > 1 ? 's' : ''}';
+                        ? 'سنة'
+                        : '${plan.durationMonths} ${plan.durationMonths > 1 ? 'أشهر' : 'شهر'}';
 
                     return _DurationOption(
                       durLabel: durLabel,
@@ -395,8 +396,8 @@ class _PlanTierCard extends StatelessWidget {
             ] else if (!isSelected && plans.isNotEmpty) ...[
               const SizedBox(height: 6),
               Text(
-                'Starts from ${basePrice.toStringAsFixed(0)} JD/month',
-                style: TextStyle(fontSize: 13, color: Colors.grey.shade600, fontWeight: FontWeight.w500),
+                'يبدأ من ${basePrice.toStringAsFixed(0)} د.أ/شهر',
+                style: const TextStyle(fontSize: 13, color: AppColors.textSecondary, fontWeight: FontWeight.w500),
               ),
             ],
           ],
@@ -434,10 +435,10 @@ class _DurationOption extends StatelessWidget {
         width: 130,
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.bgCard,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? _kBlue : Colors.grey.shade200,
+            color: isSelected ? _kBlue : AppColors.bgElevated,
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -449,35 +450,35 @@ class _DurationOption extends StatelessWidget {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
-                color: isSelected ? _kBlue : Colors.black87,
+                color: isSelected ? _kBlue : AppColors.textPrimary,
               ),
             ),
             Text(
               durLabel.split(' ').last,
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+              style: const TextStyle(fontSize: 12, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 6),
             if (originalPrice != null)
               Text(
-                '${originalPrice!.toStringAsFixed(0)} JD',
-                style: TextStyle(
+                '${originalPrice!.toStringAsFixed(0)} د.أ',
+                style: const TextStyle(
                   fontSize: 11,
-                  color: Colors.grey.shade400,
+                  color: AppColors.textHint,
                   decoration: TextDecoration.lineThrough,
                 ),
               ),
             Text(
-              '${price.toStringAsFixed(0)} JD',
+              '${price.toStringAsFixed(0)} د.أ',
               style: TextStyle(
                 fontSize: 17,
                 fontWeight: FontWeight.w800,
-                color: isSelected ? _kBlue : Colors.black87,
+                color: isSelected ? _kBlue : AppColors.textPrimary,
               ),
             ),
             if (perMonth != null)
               Text(
-                '${perMonth!.toStringAsFixed(0)}/month',
-                style: TextStyle(fontSize: 11, color: Colors.grey.shade500),
+                '${perMonth!.toStringAsFixed(0)}/شهر',
+                style: const TextStyle(fontSize: 11, color: AppColors.textHint),
               ),
           ],
         ),
@@ -554,21 +555,21 @@ class _GymNetworkSheetState extends State<_GymNetworkSheet> {
             margin: const EdgeInsets.only(top: 12),
             width: 40,
             height: 4,
-            decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(2)),
+            decoration: BoxDecoration(color: AppColors.textHint, borderRadius: BorderRadius.circular(2)),
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
             child: Column(
               children: [
                 Text(
-                  '$label Plan Network Gyms',
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Colors.black),
+                  'أندية شبكة خطة $label',
+                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Explore all the $label Plan network. You are eligible for one visit per day. Monthly limits vary by network and by gym.',
+                  'استكشف جميع أندية شبكة خطة $label...',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600, height: 1.4),
+                  style: const TextStyle(fontSize: 14, color: AppColors.textSecondary, height: 1.4),
                 ),
               ],
             ),
@@ -578,14 +579,14 @@ class _GymNetworkSheetState extends State<_GymNetworkSheet> {
             child: _loading
                 ? const Center(child: CircularProgressIndicator(color: _kBlue))
                 : _gyms == null || _gyms!.isEmpty
-                    ? Center(
-                        child: Text('No gyms available yet', style: TextStyle(color: Colors.grey.shade500, fontSize: 15)),
+                    ? const Center(
+                        child: Text('لا توجد أندية متاحة بعد', style: TextStyle(color: AppColors.textHint, fontSize: 15)),
                       )
                     : ListView.separated(
                         controller: controller,
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         itemCount: _gyms!.length,
-                        separatorBuilder: (_, __) => Divider(color: Colors.grey.shade200, height: 1),
+                        separatorBuilder: (_, __) => const Divider(color: AppColors.bgElevated, height: 1),
                         itemBuilder: (_, i) {
                           final gym = _gyms![i];
                           return Padding(
@@ -597,16 +598,16 @@ class _GymNetworkSheetState extends State<_GymNetworkSheet> {
                                   width: 48,
                                   height: 48,
                                   decoration: BoxDecoration(
-                                    color: Colors.grey.shade100,
+                                    color: AppColors.bgElevated,
                                     borderRadius: BorderRadius.circular(12),
                                   ),
                                   child: gym.logoUrl != null
                                       ? ClipRRect(
                                           borderRadius: BorderRadius.circular(12),
                                           child: Image.network(gym.logoUrl!, fit: BoxFit.cover,
-                                            errorBuilder: (_, __, ___) => Icon(Icons.fitness_center, color: Colors.grey.shade400)),
+                                            errorBuilder: (_, __, ___) => const Icon(Icons.fitness_center, color: AppColors.textHint)),
                                         )
-                                      : Icon(Icons.fitness_center, color: Colors.grey.shade400),
+                                      : const Icon(Icons.fitness_center, color: AppColors.textHint),
                                 ),
                                 const SizedBox(width: 12),
                                 Expanded(
@@ -615,12 +616,12 @@ class _GymNetworkSheetState extends State<_GymNetworkSheet> {
                                     children: [
                                       Text(
                                         gym.nameEn,
-                                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.black87),
+                                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
                                       ),
                                       if (gym.categories != null && gym.categories!.isNotEmpty)
                                         Text(
                                           gym.categories!.join(', '),
-                                          style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                                          style: const TextStyle(fontSize: 12, color: AppColors.textHint),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
                                         ),
@@ -634,12 +635,12 @@ class _GymNetworkSheetState extends State<_GymNetworkSheet> {
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: const Text(
-                                    '30 Visits',
+                                    '30 زيارة',
                                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: _kBlue),
                                   ),
                                 ),
                                 const SizedBox(width: 4),
-                                Icon(Icons.keyboard_arrow_down, color: Colors.grey.shade400),
+                                const Icon(Icons.keyboard_arrow_down, color: AppColors.textHint),
                               ],
                             ),
                           );
@@ -662,7 +663,7 @@ class _GymNetworkSheetState extends State<_GymNetworkSheet> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     elevation: 0,
                   ),
-                  child: const Text('Got it', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  child: const Text('فهمت', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 ),
               ),
             ),
