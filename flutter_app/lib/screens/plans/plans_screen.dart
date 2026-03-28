@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/app_colors.dart';
+import '../../extensions/context_ext.dart';
 import '../../models/plan.dart';
 import '../../models/gym.dart';
 import '../../providers/plan_provider.dart';
@@ -115,6 +116,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
   }
 
   Widget _buildHeader() {
+    final l = context.l10n;
     return SafeArea(
       bottom: false,
       child: Padding(
@@ -125,14 +127,14 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'خطط الأندية',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+                Text(
+                  l.gymPlans,
+                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
                 ),
                 OutlinedButton.icon(
                   onPressed: () => context.push('/subscription'),
                   icon: const Icon(Icons.history, size: 16),
-                  label: const Text('السجل'),
+                  label: Text(l.historyLabel),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: AppColors.textPrimary,
                     side: const BorderSide(color: AppColors.bgElevated),
@@ -144,14 +146,14 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            const Row(
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('✦ ', style: TextStyle(color: _kBlue, fontSize: 16)),
+                const Text('✦ ', style: TextStyle(color: _kBlue, fontSize: 16)),
                 Expanded(
                   child: Text(
-                    'وصول غير محدود للأندية شهرياً برسوم ثابتة مع تجديد تلقائي',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 14, height: 1.4),
+                    l.unlimitedGymAccess,
+                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 14, height: 1.4),
                   ),
                 ),
               ],
@@ -163,9 +165,9 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
                 size: const Size(double.infinity, 1),
               ),
             ),
-            const Text(
-              'اختر الاشتراك الأنسب لك',
-              style: TextStyle(color: AppColors.textHint, fontSize: 14),
+            Text(
+              l.choosePlan,
+              style: const TextStyle(color: AppColors.textHint, fontSize: 14),
             ),
             const SizedBox(height: 12),
           ],
@@ -175,7 +177,8 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
   }
 
   Widget _buildContinueButton(Plan plan) {
-    final durLabel = _selectedDuration == 12 ? 'سنة' : '$_selectedDuration ${_selectedDuration > 1 ? 'أشهر' : 'شهر'}';
+    final l = context.l10n;
+    final durLabel = _selectedDuration == 12 ? l.year : '$_selectedDuration ${_selectedDuration > 1 ? l.months : l.month}';
     return Container(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 12),
       decoration: BoxDecoration(
@@ -196,7 +199,7 @@ class _PlansScreenState extends ConsumerState<PlansScreen> {
               elevation: 0,
             ),
             child: Text(
-              'متابعة مع ${_kTierLabels[_selectedTier]} Plan ($durLabel)',
+              l.continueWith(_kTierLabels[_selectedTier]!, durLabel),
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
             ),
           ),
@@ -258,6 +261,7 @@ class _PlanTierCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     final color = _kTierColors[tier]!;
     final label = _kTierLabels[tier]!;
 
@@ -356,11 +360,7 @@ class _PlanTierCard extends StatelessWidget {
               children: [
                 Icon(Icons.check_circle_outline, size: 14, color: AppColors.textHint),
                 SizedBox(width: 4),
-                Text('صالح لمدة شهر', style: TextStyle(fontSize: 12, color: AppColors.textHint)),
-                Text('  |  ', style: TextStyle(fontSize: 12, color: AppColors.textHint)),
-                Icon(Icons.autorenew, size: 14, color: AppColors.textHint),
-                SizedBox(width: 4),
-                Text('تجديد تلقائي', style: TextStyle(fontSize: 12, color: AppColors.textHint)),
+                Expanded(child: _ValidityInfo()),
               ],
             ),
             // Expanded: duration picker / Collapsed: starts from
@@ -379,8 +379,8 @@ class _PlanTierCard extends StatelessWidget {
                     final hasDiscount = plan.durationMonths > 1;
                     final perMonth = plan.priceLocal / plan.durationMonths;
                     final durLabel = plan.durationMonths == 12
-                        ? 'سنة'
-                        : '${plan.durationMonths} ${plan.durationMonths > 1 ? 'أشهر' : 'شهر'}';
+                        ? l.year
+                        : '${plan.durationMonths} ${plan.durationMonths > 1 ? l.months : l.month}';
 
                     return _DurationOption(
                       durLabel: durLabel,
@@ -396,13 +396,31 @@ class _PlanTierCard extends StatelessWidget {
             ] else if (!isSelected && plans.isNotEmpty) ...[
               const SizedBox(height: 6),
               Text(
-                'يبدأ من ${basePrice.toStringAsFixed(0)} د.أ/شهر',
+                l.startsFrom(basePrice.toStringAsFixed(0)),
                 style: const TextStyle(fontSize: 13, color: AppColors.textSecondary, fontWeight: FontWeight.w500),
               ),
             ],
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ValidityInfo extends StatelessWidget {
+  const _ValidityInfo();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return Row(
+      children: [
+        Text(l.validOneMonth, style: const TextStyle(fontSize: 12, color: AppColors.textHint)),
+        const Text('  |  ', style: TextStyle(fontSize: 12, color: AppColors.textHint)),
+        const Icon(Icons.autorenew, size: 14, color: AppColors.textHint),
+        const SizedBox(width: 4),
+        Text(l.autoRenew, style: const TextStyle(fontSize: 12, color: AppColors.textHint)),
+      ],
     );
   }
 }
@@ -542,6 +560,7 @@ class _GymNetworkSheetState extends State<_GymNetworkSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final l = context.l10n;
     final label = _kTierLabels[widget.tier] ?? widget.tier;
     return DraggableScrollableSheet(
       initialChildSize: 0.75,
@@ -562,12 +581,12 @@ class _GymNetworkSheetState extends State<_GymNetworkSheet> {
             child: Column(
               children: [
                 Text(
-                  'أندية شبكة خطة $label',
+                  l.networkGyms(label),
                   style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'استكشف جميع أندية شبكة خطة $label...',
+                  l.exploreNetworkGyms(label),
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 14, color: AppColors.textSecondary, height: 1.4),
                 ),
@@ -579,8 +598,8 @@ class _GymNetworkSheetState extends State<_GymNetworkSheet> {
             child: _loading
                 ? const Center(child: CircularProgressIndicator(color: _kBlue))
                 : _gyms == null || _gyms!.isEmpty
-                    ? const Center(
-                        child: Text('لا توجد أندية متاحة بعد', style: TextStyle(color: AppColors.textHint, fontSize: 15)),
+                    ? Center(
+                        child: Text(l.noGymsYet, style: const TextStyle(color: AppColors.textHint, fontSize: 15)),
                       )
                     : ListView.separated(
                         controller: controller,
@@ -634,9 +653,9 @@ class _GymNetworkSheetState extends State<_GymNetworkSheet> {
                                     color: _kBlue.withValues(alpha: 0.08),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
-                                  child: const Text(
-                                    '30 زيارة',
-                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: _kBlue),
+                                  child: Text(
+                                    '30 ${l.visits30.split(' ').last}',
+                                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: _kBlue),
                                   ),
                                 ),
                                 const SizedBox(width: 4),
@@ -663,7 +682,7 @@ class _GymNetworkSheetState extends State<_GymNetworkSheet> {
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     elevation: 0,
                   ),
-                  child: const Text('فهمت', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                  child: Text(l.understood, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
                 ),
               ),
             ),

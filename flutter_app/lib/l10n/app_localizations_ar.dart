@@ -78,6 +78,11 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
+  String visitsRemainingOf(int remaining, int max) {
+    return '$remaining زيارة متبقية من أصل $max';
+  }
+
+  @override
   String daysRemaining(int count) {
     return '$count يوم متبقي';
   }
@@ -253,4 +258,234 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cancel => 'إلغاء';
+
+  @override
+  String get locationAmmanJordan => 'عمّان, الأردن';
+
+  @override
+  String get subscribeNow1Pass => 'اشترك الآن في 1Pass';
+
+  @override
+  String get oneSubAnyGym => 'اشتراك واحد، ادخل أي نادي في الشبكة';
+
+  @override
+  String get subscribeNow => 'اشترك الآن';
+
+  @override
+  String get categories => 'الفئات';
+
+  @override
+  String get categoryGyms => 'صالات رياضية';
+
+  @override
+  String get categoryMartialArts => 'فنون قتالية';
+
+  @override
+  String get categoryCrossfit => 'كروس فت';
+
+  @override
+  String get categoryYoga => 'يوغا';
+
+  @override
+  String get categorySpa => 'سبا';
+
+  @override
+  String get categoryPool => 'مسابح';
+
+  @override
+  String get subscribed => 'مشترك';
+
+  @override
+  String get noPlan => 'لا يوجد خطة';
+
+  @override
+  String get planLabel => 'الخطة';
+
+  @override
+  String get visitsRemainingLabel => 'الزيارات المتبقية';
+
+  @override
+  String get myPlan => 'خطتي';
+
+  @override
+  String get preferences => 'التفضيلات';
+
+  @override
+  String get helpCenter => 'مركز المساعدة والأسئلة الشائعة';
+
+  @override
+  String get invalidQr => 'رمز QR غير صالح';
+
+  @override
+  String get checkinSuccess => 'تم تسجيل الدخول بنجاح!';
+
+  @override
+  String get checkinFailed => 'فشل تسجيل الدخول';
+
+  @override
+  String get noActiveSub => 'لا يوجد اشتراك فعّال';
+
+  @override
+  String get subExpired => 'الاشتراك منتهي';
+
+  @override
+  String get alreadyCheckedIn => 'تم التسجيل مسبقاً اليوم';
+
+  @override
+  String get tierNotAllowed => 'فئة الخطة غير مسموح بها لهذا النادي';
+
+  @override
+  String get gymNotFound => 'النادي غير موجود';
+
+  @override
+  String get subscribeToEnter => 'اشترك في خطة للدخول إلى الأندية';
+
+  @override
+  String get scanGymQr => 'امسح رمز QR الموجود في النادي';
+
+  @override
+  String get oneVisitPerDay => 'زيارة واحدة لكل نادي يومياً';
+
+  @override
+  String get cameraAccessDenied => 'لا يمكن الوصول إلى الكاميرا';
+
+  @override
+  String get grantCameraPermission => 'تأكد من منح صلاحية الكاميرا';
+
+  @override
+  String get gymLabel => 'النادي';
+
+  @override
+  String get scanAnother => 'مسح آخر';
+
+  @override
+  String get gymPlans => 'خطط الأندية';
+
+  @override
+  String get historyLabel => 'السجل';
+
+  @override
+  String get unlimitedGymAccess =>
+      'وصول غير محدود للأندية شهرياً برسوم ثابتة مع تجديد تلقائي';
+
+  @override
+  String get choosePlan => 'اختر الاشتراك الأنسب لك';
+
+  @override
+  String continueWith(String tier, String duration) {
+    return 'متابعة مع $tier Plan ($duration)';
+  }
+
+  @override
+  String get validOneMonth => 'صالح لمدة شهر';
+
+  @override
+  String get autoRenew => 'تجديد تلقائي';
+
+  @override
+  String get year => 'سنة';
+
+  @override
+  String get months => 'أشهر';
+
+  @override
+  String get month => 'شهر';
+
+  @override
+  String startsFrom(String price) {
+    return 'يبدأ من $price د.أ/شهر';
+  }
+
+  @override
+  String networkGyms(String tier) {
+    return 'أندية شبكة خطة $tier';
+  }
+
+  @override
+  String exploreNetworkGyms(String tier) {
+    return 'استكشف جميع أندية شبكة خطة $tier...';
+  }
+
+  @override
+  String get noGymsYet => 'لا توجد أندية متاحة بعد';
+
+  @override
+  String get understood => 'فهمت';
+
+  @override
+  String partnerHello(String name) {
+    return 'مرحباً، $name';
+  }
+
+  @override
+  String get partnerDashboard => 'لوحة تحكم النادي';
+
+  @override
+  String get showGymQr => 'عرض رمز QR للنادي';
+
+  @override
+  String get memberScansToCheckin => 'يمسح العضو هذا الرمز لتسجيل دخوله';
+
+  @override
+  String get statistics => 'الإحصائيات';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get thisMonth => 'هذا الشهر';
+
+  @override
+  String get total => 'الإجمالي';
+
+  @override
+  String get monthEarnings => 'أرباح الشهر';
+
+  @override
+  String get noGymLinked => 'لا يوجد نادي مرتبط';
+
+  @override
+  String get askAdminLinkGym => 'اطلب من المشرف ربط نادي بحسابك';
+
+  @override
+  String get recentCheckins => 'آخر عمليات الدخول';
+
+  @override
+  String get noCheckinsYet => 'لا توجد عمليات دخول بعد';
+
+  @override
+  String get member => 'عضو';
+
+  @override
+  String get gymQrCode => 'رمز QR للنادي';
+
+  @override
+  String get noGymLinkedToAccount => 'لا يوجد نادي مرتبط بحسابك';
+
+  @override
+  String get showQrToMembers => 'اعرض هذا الرمز للأعضاء لمسحه';
+
+  @override
+  String get memberScansThisQr => 'يمسح العضو هذا الرمز لتسجيل دخوله';
+
+  @override
+  String get qrCodeFixed => 'الرمز ثابت — لا يتغير';
+
+  @override
+  String get partnerHome => 'الرئيسية';
+
+  @override
+  String get partnerQr => 'رمز QR';
+
+  @override
+  String get defaultGymName => 'النادي';
+
+  @override
+  String get partnerDefault => 'شريك';
+
+  @override
+  String get defaultInitial => 'م';
+
+  @override
+  String get amountPaid => 'المبلغ المدفوع';
 }

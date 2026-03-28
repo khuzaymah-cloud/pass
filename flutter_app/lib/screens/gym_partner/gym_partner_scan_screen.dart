@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/app_colors.dart';
+import '../../extensions/context_ext.dart';
 import '../../services/api_client.dart';
 
 const _kBlue = AppColors.accent;
@@ -19,49 +20,56 @@ class GymPartnerScanScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final gymAsync = ref.watch(_myGymProvider);
+    final l = context.l10n;
 
     return Scaffold(
       backgroundColor: AppColors.bgPrimary,
       appBar: AppBar(
         backgroundColor: AppColors.bgPrimary,
-        title: const Text('رمز QR للنادي', style: TextStyle(color: AppColors.textPrimary)),
+        title: Text(l.gymQrCode, style: const TextStyle(color: AppColors.textPrimary)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textPrimary),
           onPressed: () => context.go('/partner'),
         ),
       ),
       body: gymAsync.when(
-        data: (gym) => _buildQrDisplay(gym),
+        data: (gym) => _QrDisplay(gym: gym),
         loading: () => const Center(child: CircularProgressIndicator(color: _kBlue)),
-        error: (_, __) => const Center(
+        error: (_, __) => Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.error_outline, color: AppColors.error, size: 48),
-              SizedBox(height: 12),
-              Text('لا يوجد نادي مرتبط بحسابك', style: TextStyle(color: AppColors.textSecondary, fontSize: 15)),
+              const Icon(Icons.error_outline, color: AppColors.error, size: 48),
+              const SizedBox(height: 12),
+              Text(l.noGymLinkedToAccount, style: const TextStyle(color: AppColors.textSecondary, fontSize: 15)),
             ],
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildQrDisplay(Map<String, dynamic> gym) {
+class _QrDisplay extends StatelessWidget {
+  final Map<String, dynamic> gym;
+  const _QrDisplay({required this.gym});
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
     final gymId = gym['id'] as String;
-    final gymName = (gym['name_ar'] as String?) ?? (gym['name_en'] as String?) ?? 'النادي';
+    final gymName = (gym['name_ar'] as String?) ?? (gym['name_en'] as String?) ?? l.defaultGymName;
     final qrData = '1pass-gym:$gymId';
 
     return Column(
       children: [
         const SizedBox(height: 24),
-        const Text(
-          'اعرض هذا الرمز للأعضاء لمسحه',
-          style: TextStyle(color: AppColors.textSecondary, fontSize: 15),
+        Text(
+          l.showQrToMembers,
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 15),
           textAlign: TextAlign.center,
         ),
         const Spacer(),
-        // QR container
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 40),
           padding: const EdgeInsets.all(24),
@@ -97,23 +105,23 @@ class GymPartnerScanScreen extends ConsumerWidget {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 6),
-              const Text(
-                'يمسح العضو هذا الرمز لتسجيل دخوله',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+              Text(
+                l.memberScansThisQr,
+                style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
                 textAlign: TextAlign.center,
               ),
             ],
           ),
         ),
         const Spacer(),
-        const Padding(
-          padding: EdgeInsets.only(bottom: 24),
+        Padding(
+          padding: const EdgeInsets.only(bottom: 24),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.info_outline, color: AppColors.textHint, size: 16),
-              SizedBox(width: 6),
-              Text('الرمز ثابت — لا يتغير', style: TextStyle(color: AppColors.textHint, fontSize: 12)),
+              const Icon(Icons.info_outline, color: AppColors.textHint, size: 16),
+              const SizedBox(width: 6),
+              Text(l.qrCodeFixed, style: const TextStyle(color: AppColors.textHint, fontSize: 12)),
             ],
           ),
         ),

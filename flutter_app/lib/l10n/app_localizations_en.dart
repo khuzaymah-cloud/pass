@@ -78,6 +78,11 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String visitsRemainingOf(int remaining, int max) {
+    return '$remaining visits remaining of $max';
+  }
+
+  @override
   String daysRemaining(int count) {
     return '$count days remaining';
   }
@@ -253,4 +258,234 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get locationAmmanJordan => 'Amman, Jordan';
+
+  @override
+  String get subscribeNow1Pass => 'Subscribe to 1Pass now';
+
+  @override
+  String get oneSubAnyGym => 'One subscription, enter any gym in the network';
+
+  @override
+  String get subscribeNow => 'Subscribe Now';
+
+  @override
+  String get categories => 'Categories';
+
+  @override
+  String get categoryGyms => 'Gyms';
+
+  @override
+  String get categoryMartialArts => 'Martial Arts';
+
+  @override
+  String get categoryCrossfit => 'CrossFit';
+
+  @override
+  String get categoryYoga => 'Yoga';
+
+  @override
+  String get categorySpa => 'Spa';
+
+  @override
+  String get categoryPool => 'Pools';
+
+  @override
+  String get subscribed => 'Subscribed';
+
+  @override
+  String get noPlan => 'No plan';
+
+  @override
+  String get planLabel => 'Plan';
+
+  @override
+  String get visitsRemainingLabel => 'Visits remaining';
+
+  @override
+  String get myPlan => 'My Plan';
+
+  @override
+  String get preferences => 'Preferences';
+
+  @override
+  String get helpCenter => 'Help Center & FAQ';
+
+  @override
+  String get invalidQr => 'Invalid QR code';
+
+  @override
+  String get checkinSuccess => 'Checked in successfully!';
+
+  @override
+  String get checkinFailed => 'Check-in failed';
+
+  @override
+  String get noActiveSub => 'No active subscription';
+
+  @override
+  String get subExpired => 'Subscription expired';
+
+  @override
+  String get alreadyCheckedIn => 'Already checked in today';
+
+  @override
+  String get tierNotAllowed => 'Plan tier not allowed for this gym';
+
+  @override
+  String get gymNotFound => 'Gym not found';
+
+  @override
+  String get subscribeToEnter => 'Subscribe to a plan to enter gyms';
+
+  @override
+  String get scanGymQr => 'Scan the QR code at the gym';
+
+  @override
+  String get oneVisitPerDay => 'One visit per gym per day';
+
+  @override
+  String get cameraAccessDenied => 'Cannot access camera';
+
+  @override
+  String get grantCameraPermission => 'Make sure to grant camera permission';
+
+  @override
+  String get gymLabel => 'Gym';
+
+  @override
+  String get scanAnother => 'Scan Another';
+
+  @override
+  String get gymPlans => 'Gym Plans';
+
+  @override
+  String get historyLabel => 'History';
+
+  @override
+  String get unlimitedGymAccess =>
+      'Unlimited monthly gym access with a fixed fee and auto-renewal';
+
+  @override
+  String get choosePlan => 'Choose the best plan for you';
+
+  @override
+  String continueWith(String tier, String duration) {
+    return 'Continue with $tier Plan ($duration)';
+  }
+
+  @override
+  String get validOneMonth => 'Valid for one month';
+
+  @override
+  String get autoRenew => 'Auto-renewal';
+
+  @override
+  String get year => 'Year';
+
+  @override
+  String get months => 'months';
+
+  @override
+  String get month => 'month';
+
+  @override
+  String startsFrom(String price) {
+    return 'Starts from $price JD/month';
+  }
+
+  @override
+  String networkGyms(String tier) {
+    return '$tier Plan Network Gyms';
+  }
+
+  @override
+  String exploreNetworkGyms(String tier) {
+    return 'Explore all $tier plan network gyms...';
+  }
+
+  @override
+  String get noGymsYet => 'No gyms available yet';
+
+  @override
+  String get understood => 'Got it';
+
+  @override
+  String partnerHello(String name) {
+    return 'Hello, $name';
+  }
+
+  @override
+  String get partnerDashboard => 'Gym Dashboard';
+
+  @override
+  String get showGymQr => 'Show Gym QR Code';
+
+  @override
+  String get memberScansToCheckin => 'Member scans this code to check in';
+
+  @override
+  String get statistics => 'Statistics';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get thisMonth => 'This Month';
+
+  @override
+  String get total => 'Total';
+
+  @override
+  String get monthEarnings => 'Monthly Earnings';
+
+  @override
+  String get noGymLinked => 'No gym linked';
+
+  @override
+  String get askAdminLinkGym => 'Ask the admin to link a gym to your account';
+
+  @override
+  String get recentCheckins => 'Recent Check-ins';
+
+  @override
+  String get noCheckinsYet => 'No check-ins yet';
+
+  @override
+  String get member => 'Member';
+
+  @override
+  String get gymQrCode => 'Gym QR Code';
+
+  @override
+  String get noGymLinkedToAccount => 'No gym linked to your account';
+
+  @override
+  String get showQrToMembers => 'Show this code to members to scan';
+
+  @override
+  String get memberScansThisQr => 'Member scans this code to check in';
+
+  @override
+  String get qrCodeFixed => 'This code is fixed — it doesn\'t change';
+
+  @override
+  String get partnerHome => 'Home';
+
+  @override
+  String get partnerQr => 'QR Code';
+
+  @override
+  String get defaultGymName => 'Gym';
+
+  @override
+  String get partnerDefault => 'Partner';
+
+  @override
+  String get defaultInitial => 'M';
+
+  @override
+  String get amountPaid => 'Amount Paid';
 }

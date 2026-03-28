@@ -66,10 +66,11 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
     _controller?.stop();
 
     final gymId = qrData.substring('1pass-gym:'.length);
+    final l = context.l10n;
     if (gymId.isEmpty) {
       setState(() {
-        _result = const _CheckinResult(
-            success: false, message: 'رمز QR غير صالح');
+        _result = _CheckinResult(
+            success: false, message: l.invalidQr);
         _isProcessing = false;
       });
       return;
@@ -83,7 +84,7 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
       setState(() {
         _result = _CheckinResult(
           success: true,
-          message: 'تم تسجيل الدخول بنجاح!',
+          message: l.checkinSuccess,
           gymName: data['gym_name'] as String?,
           planTier: data['plan_tier'] as String?,
           visitsRemaining: data['visits_remaining'] as int?,
@@ -93,18 +94,18 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
       });
       ref.invalidate(activeSubscriptionProvider);
     } catch (e) {
-      String msg = 'فشل تسجيل الدخول';
+      String msg = l.checkinFailed;
       final str = e.toString();
       if (str.contains('No active subscription')) {
-        msg = 'لا يوجد اشتراك فعّال';
+        msg = l.noActiveSub;
       } else if (str.contains('expired')) {
-        msg = 'الاشتراك منتهي';
+        msg = l.subExpired;
       } else if (str.contains('Duplicate') || str.contains('already')) {
-        msg = 'تم التسجيل مسبقاً اليوم';
+        msg = l.alreadyCheckedIn;
       } else if (str.contains('tier')) {
-        msg = 'فئة الخطة غير مسموح بها لهذا النادي';
+        msg = l.tierNotAllowed;
       } else if (str.contains('not found')) {
-        msg = 'النادي غير موجود';
+        msg = l.gymNotFound;
       }
       setState(() {
         _result = _CheckinResult(success: false, message: msg);
@@ -177,9 +178,9 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            const Text(
-              'اشترك في خطة للدخول إلى الأندية',
-              style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+            Text(
+              context.l10n.subscribeToEnter,
+              style: const TextStyle(color: AppColors.textSecondary, fontSize: 14),
             ),
             const SizedBox(height: 24),
             SizedBox(
@@ -232,9 +233,9 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
           ),
         ),
         const SizedBox(height: 12),
-        const Text('امسح رمز QR الموجود في النادي',
+        Text(context.l10n.scanGymQr,
             style:
-                TextStyle(color: AppColors.textSecondary, fontSize: 14)),
+                const TextStyle(color: AppColors.textSecondary, fontSize: 14)),
         const SizedBox(height: 16),
         // Scanner
         Expanded(
@@ -315,7 +316,7 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
                 ),
               ),
               const SizedBox(width: 12),
-              Text('$remaining زيارة متبقية من أصل $max',
+              Text(context.l10n.visitsRemainingOf(remaining, max),
                   style: const TextStyle(
                       color: AppColors.textSecondary, fontSize: 13)),
             ],
@@ -323,17 +324,7 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
         ),
         const Padding(
           padding: EdgeInsets.all(16),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.info_outline,
-                  color: AppColors.textHint, size: 16),
-              SizedBox(width: 6),
-              Text('زيارة واحدة لكل نادي يومياً',
-                  style: TextStyle(
-                      color: AppColors.textHint, fontSize: 12)),
-            ],
-          ),
+          child: _OneVisitHint(),
         ),
       ],
     );
@@ -349,14 +340,14 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
             const Icon(Icons.videocam_off_rounded,
                 color: AppColors.textSecondary, size: 48),
             const SizedBox(height: 16),
-            const Text('لا يمكن الوصول إلى الكاميرا',
-                style: TextStyle(
+            Text(context.l10n.cameraAccessDenied,
+                style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 16,
                     fontWeight: FontWeight.w600)),
             const SizedBox(height: 8),
-            const Text('تأكد من منح صلاحية الكاميرا',
-                style: TextStyle(
+            Text(context.l10n.grantCameraPermission,
+                style: const TextStyle(
                     color: AppColors.textSecondary, fontSize: 13)),
             const SizedBox(height: 20),
             ElevatedButton(
@@ -367,7 +358,7 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12)),
               ),
-              child: const Text('إعادة المحاولة'),
+              child: Text(context.l10n.retry),
             ),
           ],
         ),
@@ -416,14 +407,14 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
                 ),
                 child: Column(
                   children: [
-                    _DetailRow(label: 'النادي', value: r.gymName!),
+                    _DetailRow(label: context.l10n.gymLabel, value: r.gymName!),
                     _divider(),
                     _DetailRow(
-                        label: 'الخطة',
+                        label: context.l10n.planLabel,
                         value: (r.planTier ?? '').toUpperCase()),
                     _divider(),
                     _DetailRow(
-                        label: 'الزيارات المتبقية',
+                        label: context.l10n.visitsRemainingLabel,
                         value: '${r.visitsRemaining ?? remaining}'),
                   ],
                 ),
@@ -436,8 +427,8 @@ class _QrCheckinScreenState extends ConsumerState<QrCheckinScreen>
               child: ElevatedButton.icon(
                 onPressed: _resetScan,
                 icon: const Icon(Icons.qr_code_scanner_rounded),
-                label: const Text('مسح آخر',
-                    style: TextStyle(
+                label: Text(context.l10n.scanAnother,
+                    style: const TextStyle(
                         fontSize: 15, fontWeight: FontWeight.w600)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: _kBlue,
@@ -494,6 +485,23 @@ class _DetailRow extends StatelessWidget {
                 color: AppColors.textPrimary,
                 fontSize: 14,
                 fontWeight: FontWeight.w600)),
+      ],
+    );
+  }
+}
+
+class _OneVisitHint extends StatelessWidget {
+  const _OneVisitHint();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.info_outline, color: AppColors.textHint, size: 16),
+        const SizedBox(width: 6),
+        Text(context.l10n.oneVisitPerDay,
+            style: const TextStyle(color: AppColors.textHint, fontSize: 12)),
       ],
     );
   }

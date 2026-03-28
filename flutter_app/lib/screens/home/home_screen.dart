@@ -3,18 +3,19 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../config/app_colors.dart';
 import '../../extensions/context_ext.dart';
+import '../../l10n/app_localizations.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/subscription_provider.dart';
 
 const _kBlue = AppColors.accent;
 
-const _kCategories = [
-  (icon: Icons.fitness_center, label: 'صالات رياضية', key: 'gym'),
-  (icon: Icons.sports_kabaddi, label: 'فنون قتالية', key: 'martial'),
-  (icon: Icons.sports_gymnastics, label: 'كروس فت', key: 'crossfit'),
-  (icon: Icons.self_improvement, label: 'يوغا', key: 'yoga'),
-  (icon: Icons.spa, label: 'سبا', key: 'spa'),
-  (icon: Icons.pool, label: 'مسابح', key: 'pool'),
+List<({IconData icon, String Function(AppLocalizations) label, String key})> _categories() => [
+  (icon: Icons.fitness_center, label: (l) => l.categoryGyms, key: 'gym'),
+  (icon: Icons.sports_kabaddi, label: (l) => l.categoryMartialArts, key: 'martial'),
+  (icon: Icons.sports_gymnastics, label: (l) => l.categoryCrossfit, key: 'crossfit'),
+  (icon: Icons.self_improvement, label: (l) => l.categoryYoga, key: 'yoga'),
+  (icon: Icons.spa, label: (l) => l.categorySpa, key: 'spa'),
+  (icon: Icons.pool, label: (l) => l.categoryPool, key: 'pool'),
 ];
 
 class HomeScreen extends ConsumerWidget {
@@ -25,6 +26,8 @@ class HomeScreen extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
     final activeSub = ref.watch(activeSubscriptionProvider);
     final user = authState.valueOrNull?.user;
+    final l = context.l10n;
+    final cats = _categories();
 
     return Scaffold(
       backgroundColor: AppColors.bgPrimary,
@@ -46,7 +49,7 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     child: Center(
                       child: Text(
-                        (user?.fullName ?? 'م').substring(0, 1),
+                        (user?.fullName ?? l.defaultInitial).substring(0, 1),
                         style: const TextStyle(
                             color: _kBlue,
                             fontSize: 18,
@@ -60,15 +63,15 @@ class HomeScreen extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          context.l10n.hey(user?.fullName ?? ''),
+                          l.hey(user?.fullName ?? ''),
                           style: const TextStyle(
                               color: AppColors.textPrimary,
                               fontSize: 16,
                               fontWeight: FontWeight.w600),
                         ),
-                        const Text(
-                          'عمّان, الأردن',
-                          style: TextStyle(
+                        Text(
+                          l.locationAmmanJordan,
+                          style: const TextStyle(
                               color: AppColors.textSecondary, fontSize: 12),
                         ),
                       ],
@@ -89,8 +92,8 @@ class HomeScreen extends ConsumerWidget {
                 data: (sub) {
                   if (sub == null) {
                     return _PromoBanner(
-                      title: 'اشترك الآن في 1Pass',
-                      subtitle: 'اشتراك واحد، ادخل أي نادي في الشبكة',
+                      title: l.subscribeNow1Pass,
+                      subtitle: l.oneSubAnyGym,
                       onTap: () => context.go('/plans'),
                     );
                   }
@@ -119,8 +122,8 @@ class HomeScreen extends ConsumerWidget {
                           color: _kBlue,
                           borderRadius: BorderRadius.circular(2))),
                   const SizedBox(width: 8),
-                  const Text('الفئات',
-                      style: TextStyle(
+                  Text(l.categories,
+                      style: const TextStyle(
                           color: AppColors.textPrimary,
                           fontSize: 18,
                           fontWeight: FontWeight.w700)),
@@ -139,9 +142,9 @@ class HomeScreen extends ConsumerWidget {
                   crossAxisSpacing: 16,
                   childAspectRatio: 0.9,
                 ),
-                itemCount: _kCategories.length,
+                itemCount: cats.length,
                 itemBuilder: (_, i) {
-                  final cat = _kCategories[i];
+                  final cat = cats[i];
                   return GestureDetector(
                     onTap: () => context.go('/plans'),
                     child: Container(
@@ -164,7 +167,7 @@ class HomeScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: 10),
                           Text(
-                            cat.label,
+                            cat.label(l),
                             style: const TextStyle(
                                 color: AppColors.textPrimary,
                                 fontSize: 13,
@@ -232,8 +235,8 @@ class _PromoBanner extends StatelessWidget {
                     decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(20)),
-                    child: const Text('اشترك الآن',
-                        style: TextStyle(
+                    child: Text(AppLocalizations.of(context)!.subscribeNow,
+                        style: const TextStyle(
                             color: _kBlue,
                             fontSize: 13,
                             fontWeight: FontWeight.w600)),
@@ -302,15 +305,17 @@ class _SubBanner extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('$remaining زيارة متبقية',
+                Builder(builder: (context) => Text(
+                    context.l10n.visitsRemaining(remaining),
                     style: const TextStyle(
                         color: _kBlue,
                         fontSize: 16,
-                        fontWeight: FontWeight.w600)),
+                        fontWeight: FontWeight.w600))),
                 const SizedBox(height: 4),
-                Text('$daysRemaining يوم متبقي',
+                Builder(builder: (context) => Text(
+                    context.l10n.daysRemaining(daysRemaining),
                     style: const TextStyle(
-                        color: AppColors.textSecondary, fontSize: 13)),
+                        color: AppColors.textSecondary, fontSize: 13))),
               ],
             ),
           ),

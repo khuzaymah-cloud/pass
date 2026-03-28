@@ -168,6 +168,7 @@ class _PartnerBottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
     final index = location == '/partner/scan' ? 1 : 0;
+    final l = context.l10n;
 
     return BottomNavigationBar(
       currentIndex: index,
@@ -176,11 +177,11 @@ class _PartnerBottomNav extends StatelessWidget {
         final routes = ['/partner', '/partner/scan'];
         context.go(routes[i]);
       },
-      items: const [
+      items: [
         BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_rounded), label: 'الرئيسية'),
+            icon: const Icon(Icons.dashboard_rounded), label: l.partnerHome),
         BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code_2_rounded), label: 'رمز QR'),
+            icon: const Icon(Icons.qr_code_2_rounded), label: l.partnerQr),
       ],
     );
   }

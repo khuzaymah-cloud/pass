@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/app_colors.dart';
+import '../../extensions/context_ext.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_partner_provider.dart';
 import '../../widgets/shimmer_loader.dart';
@@ -16,6 +17,7 @@ class GymPartnerHomeScreen extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
     final stats = ref.watch(gymPartnerStatsProvider);
     final user = authState.valueOrNull?.user;
+    final l = context.l10n;
 
     return Scaffold(
       backgroundColor: AppColors.bgPrimary,
@@ -44,14 +46,14 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'مرحباً، ${user?.fullName ?? 'شريك'}',
+                            l.partnerHello(user?.fullName ?? l.partnerDefault),
                             style: const TextStyle(
                                 color: AppColors.textPrimary,
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700),
                           ),
-                          const Text('لوحة تحكم النادي',
-                              style: TextStyle(
+                          Text(l.partnerDashboard,
+                              style: const TextStyle(
                                   color: AppColors.textSecondary,
                                   fontSize: 13)),
                         ],
@@ -105,18 +107,18 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                               color: Colors.white, size: 28),
                         ),
                         const SizedBox(width: 14),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('عرض رمز QR للنادي',
-                                  style: TextStyle(
+                              Text(l.showGymQr,
+                                  style: const TextStyle(
                                       color: Colors.white,
                                       fontSize: 17,
                                       fontWeight: FontWeight.w600)),
-                              SizedBox(height: 4),
-                              Text('يمسح العضو هذا الرمز لتسجيل دخوله',
-                                  style: TextStyle(
+                              const SizedBox(height: 4),
+                              Text(l.memberScansToCheckin,
+                                  style: const TextStyle(
                                       color: Colors.white70, fontSize: 13)),
                             ],
                           ),
@@ -149,8 +151,8 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                                   color: _kBlue,
                                   borderRadius: BorderRadius.circular(2))),
                           const SizedBox(width: 8),
-                          const Text('الإحصائيات',
-                              style: TextStyle(
+                          Text(l.statistics,
+                              style: const TextStyle(
                                   color: AppColors.textPrimary,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w700)),
@@ -161,12 +163,12 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                         children: [
                           _StatTile(
                               icon: Icons.today_rounded,
-                              label: 'اليوم',
+                              label: l.today,
                               value: '${data['visits_today'] ?? 0}'),
                           const SizedBox(width: 12),
                           _StatTile(
                               icon: Icons.calendar_month_rounded,
-                              label: 'هذا الشهر',
+                              label: l.thisMonth,
                               value: '${data['visits_month'] ?? 0}'),
                         ],
                       ),
@@ -175,12 +177,12 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                         children: [
                           _StatTile(
                               icon: Icons.bar_chart_rounded,
-                              label: 'الإجمالي',
+                              label: l.total,
                               value: '${data['visits_total'] ?? 0}'),
                           const SizedBox(width: 12),
                           _StatTile(
                             icon: Icons.payments_rounded,
-                            label: 'أرباح الشهر',
+                            label: l.monthEarnings,
                             value:
                                 '${(data['earnings_month'] ?? 0.0).toStringAsFixed(2)} د.أ',
                           ),
@@ -203,17 +205,17 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(16),
                       border: Border.all(color: AppColors.bgElevated),
                     ),
-                    child: const Column(
+                    child: Column(
                       children: [
-                        Icon(Icons.info_outline,
+                        const Icon(Icons.info_outline,
                             color: AppColors.warning, size: 40),
-                        SizedBox(height: 12),
-                        Text('لا يوجد نادي مرتبط',
-                            style: TextStyle(
+                        const SizedBox(height: 12),
+                        Text(l.noGymLinked,
+                            style: const TextStyle(
                                 color: AppColors.textSecondary, fontSize: 14)),
-                        SizedBox(height: 4),
-                        Text('اطلب من المشرف ربط نادي بحسابك',
-                            style: TextStyle(
+                        const SizedBox(height: 4),
+                        Text(l.askAdminLinkGym,
+                            style: const TextStyle(
                                 color: AppColors.textHint, fontSize: 12)),
                       ],
                     ),
@@ -237,8 +239,8 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                             color: _kBlue,
                             borderRadius: BorderRadius.circular(2))),
                     const SizedBox(width: 8),
-                    const Text('آخر عمليات الدخول',
-                        style: TextStyle(
+                    Text(l.recentCheckins,
+                        style: const TextStyle(
                             color: AppColors.textPrimary,
                             fontSize: 18,
                             fontWeight: FontWeight.w700)),
@@ -251,13 +253,13 @@ class GymPartnerHomeScreen extends ConsumerWidget {
               data: (data) {
                 final recent = (data['recent_checkins'] as List?) ?? [];
                 if (recent.isEmpty) {
-                  return const SliverToBoxAdapter(
+                  return SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.all(24),
+                      padding: const EdgeInsets.all(24),
                       child: Center(
-                          child: Text('لا توجد عمليات دخول بعد',
+                          child: Text(l.noCheckinsYet,
                               style:
-                                  TextStyle(color: AppColors.textSecondary))),
+                                  const TextStyle(color: AppColors.textSecondary))),
                     ),
                   );
                 }
@@ -296,7 +298,7 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    item['member_name'] ?? 'عضو',
+                                    item['member_name'] ?? l.member,
                                     style: const TextStyle(
                                         color: AppColors.textPrimary,
                                         fontSize: 14,

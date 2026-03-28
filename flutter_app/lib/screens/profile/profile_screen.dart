@@ -17,7 +17,7 @@ class ProfileScreen extends ConsumerWidget {
     final activeSub = ref.watch(activeSubscriptionProvider);
     final user = authState.valueOrNull?.user;
 
-    final planName = activeSub.valueOrNull?.isActive == true ? 'مشترك' : 'لا يوجد خطة';
+    final planName = activeSub.valueOrNull?.isActive == true ? context.l10n.subscribed : context.l10n.noPlan;
     final visitsRemaining = activeSub.valueOrNull?.visitsRemaining ?? 0;
 
     return Scaffold(
@@ -62,7 +62,7 @@ class ProfileScreen extends ConsumerWidget {
                         ),
                         child: Center(
                           child: Text(
-                            (user?.fullName ?? 'م')
+                            (user?.fullName ?? context.l10n.defaultInitial)
                                 .substring(0, 1)
                                 .toUpperCase(),
                             style: const TextStyle(
@@ -93,7 +93,7 @@ class ProfileScreen extends ConsumerWidget {
                           Expanded(
                             child: _InfoCard(
                               icon: Icons.fitness_center_rounded,
-                              label: 'الخطة',
+                              label: context.l10n.planLabel,
                               value: planName,
                             ),
                           ),
@@ -101,7 +101,7 @@ class ProfileScreen extends ConsumerWidget {
                           Expanded(
                             child: _InfoCard(
                               icon: Icons.confirmation_number_rounded,
-                              label: 'الزيارات المتبقية',
+                              label: context.l10n.visitsRemainingLabel,
                               value: '$visitsRemaining',
                             ),
                           ),
@@ -119,18 +119,18 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     _MenuTile(
                       icon: Icons.card_membership_rounded,
-                      label: 'خطتي',
+                      label: context.l10n.myPlan,
                       onTap: () => context.push('/subscription'),
                     ),
                     _MenuTile(
                       icon: Icons.tune_rounded,
-                      label: 'التفضيلات',
-                      subtitle: 'عمّان',
+                      label: context.l10n.preferences,
+                      subtitle: context.l10n.locationAmmanJordan,
                       onTap: () {},
                     ),
                     _MenuTile(
                       icon: Icons.help_outline_rounded,
-                      label: 'مركز المساعدة والأسئلة الشائعة',
+                      label: context.l10n.helpCenter,
                       onTap: () {},
                     ),
                     _MenuTile(

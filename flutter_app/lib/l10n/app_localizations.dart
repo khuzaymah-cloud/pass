@@ -224,6 +224,12 @@ abstract class AppLocalizations {
   /// **'{count} visits remaining'**
   String visitsRemaining(int count);
 
+  /// No description provided for @visitsRemainingOf.
+  ///
+  /// In en, this message translates to:
+  /// **'{remaining} visits remaining of {max}'**
+  String visitsRemainingOf(int remaining, int max);
+
   /// No description provided for @daysRemaining.
   ///
   /// In en, this message translates to:
@@ -565,6 +571,444 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Cancel'**
   String get cancel;
+
+  /// No description provided for @locationAmmanJordan.
+  ///
+  /// In en, this message translates to:
+  /// **'Amman, Jordan'**
+  String get locationAmmanJordan;
+
+  /// No description provided for @subscribeNow1Pass.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe to 1Pass now'**
+  String get subscribeNow1Pass;
+
+  /// No description provided for @oneSubAnyGym.
+  ///
+  /// In en, this message translates to:
+  /// **'One subscription, enter any gym in the network'**
+  String get oneSubAnyGym;
+
+  /// No description provided for @subscribeNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe Now'**
+  String get subscribeNow;
+
+  /// No description provided for @categories.
+  ///
+  /// In en, this message translates to:
+  /// **'Categories'**
+  String get categories;
+
+  /// No description provided for @categoryGyms.
+  ///
+  /// In en, this message translates to:
+  /// **'Gyms'**
+  String get categoryGyms;
+
+  /// No description provided for @categoryMartialArts.
+  ///
+  /// In en, this message translates to:
+  /// **'Martial Arts'**
+  String get categoryMartialArts;
+
+  /// No description provided for @categoryCrossfit.
+  ///
+  /// In en, this message translates to:
+  /// **'CrossFit'**
+  String get categoryCrossfit;
+
+  /// No description provided for @categoryYoga.
+  ///
+  /// In en, this message translates to:
+  /// **'Yoga'**
+  String get categoryYoga;
+
+  /// No description provided for @categorySpa.
+  ///
+  /// In en, this message translates to:
+  /// **'Spa'**
+  String get categorySpa;
+
+  /// No description provided for @categoryPool.
+  ///
+  /// In en, this message translates to:
+  /// **'Pools'**
+  String get categoryPool;
+
+  /// No description provided for @subscribed.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribed'**
+  String get subscribed;
+
+  /// No description provided for @noPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'No plan'**
+  String get noPlan;
+
+  /// No description provided for @planLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan'**
+  String get planLabel;
+
+  /// No description provided for @visitsRemainingLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Visits remaining'**
+  String get visitsRemainingLabel;
+
+  /// No description provided for @myPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'My Plan'**
+  String get myPlan;
+
+  /// No description provided for @preferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferences'**
+  String get preferences;
+
+  /// No description provided for @helpCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'Help Center & FAQ'**
+  String get helpCenter;
+
+  /// No description provided for @invalidQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid QR code'**
+  String get invalidQr;
+
+  /// No description provided for @checkinSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Checked in successfully!'**
+  String get checkinSuccess;
+
+  /// No description provided for @checkinFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Check-in failed'**
+  String get checkinFailed;
+
+  /// No description provided for @noActiveSub.
+  ///
+  /// In en, this message translates to:
+  /// **'No active subscription'**
+  String get noActiveSub;
+
+  /// No description provided for @subExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscription expired'**
+  String get subExpired;
+
+  /// No description provided for @alreadyCheckedIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Already checked in today'**
+  String get alreadyCheckedIn;
+
+  /// No description provided for @tierNotAllowed.
+  ///
+  /// In en, this message translates to:
+  /// **'Plan tier not allowed for this gym'**
+  String get tierNotAllowed;
+
+  /// No description provided for @gymNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym not found'**
+  String get gymNotFound;
+
+  /// No description provided for @subscribeToEnter.
+  ///
+  /// In en, this message translates to:
+  /// **'Subscribe to a plan to enter gyms'**
+  String get subscribeToEnter;
+
+  /// No description provided for @scanGymQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan the QR code at the gym'**
+  String get scanGymQr;
+
+  /// No description provided for @oneVisitPerDay.
+  ///
+  /// In en, this message translates to:
+  /// **'One visit per gym per day'**
+  String get oneVisitPerDay;
+
+  /// No description provided for @cameraAccessDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot access camera'**
+  String get cameraAccessDenied;
+
+  /// No description provided for @grantCameraPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure to grant camera permission'**
+  String get grantCameraPermission;
+
+  /// No description provided for @gymLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym'**
+  String get gymLabel;
+
+  /// No description provided for @scanAnother.
+  ///
+  /// In en, this message translates to:
+  /// **'Scan Another'**
+  String get scanAnother;
+
+  /// No description provided for @gymPlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym Plans'**
+  String get gymPlans;
+
+  /// No description provided for @historyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'History'**
+  String get historyLabel;
+
+  /// No description provided for @unlimitedGymAccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited monthly gym access with a fixed fee and auto-renewal'**
+  String get unlimitedGymAccess;
+
+  /// No description provided for @choosePlan.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the best plan for you'**
+  String get choosePlan;
+
+  /// No description provided for @continueWith.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with {tier} Plan ({duration})'**
+  String continueWith(String tier, String duration);
+
+  /// No description provided for @validOneMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'Valid for one month'**
+  String get validOneMonth;
+
+  /// No description provided for @autoRenew.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-renewal'**
+  String get autoRenew;
+
+  /// No description provided for @year.
+  ///
+  /// In en, this message translates to:
+  /// **'Year'**
+  String get year;
+
+  /// No description provided for @months.
+  ///
+  /// In en, this message translates to:
+  /// **'months'**
+  String get months;
+
+  /// No description provided for @month.
+  ///
+  /// In en, this message translates to:
+  /// **'month'**
+  String get month;
+
+  /// No description provided for @startsFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'Starts from {price} JD/month'**
+  String startsFrom(String price);
+
+  /// No description provided for @networkGyms.
+  ///
+  /// In en, this message translates to:
+  /// **'{tier} Plan Network Gyms'**
+  String networkGyms(String tier);
+
+  /// No description provided for @exploreNetworkGyms.
+  ///
+  /// In en, this message translates to:
+  /// **'Explore all {tier} plan network gyms...'**
+  String exploreNetworkGyms(String tier);
+
+  /// No description provided for @noGymsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No gyms available yet'**
+  String get noGymsYet;
+
+  /// No description provided for @understood.
+  ///
+  /// In en, this message translates to:
+  /// **'Got it'**
+  String get understood;
+
+  /// No description provided for @partnerHello.
+  ///
+  /// In en, this message translates to:
+  /// **'Hello, {name}'**
+  String partnerHello(String name);
+
+  /// No description provided for @partnerDashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym Dashboard'**
+  String get partnerDashboard;
+
+  /// No description provided for @showGymQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Gym QR Code'**
+  String get showGymQr;
+
+  /// No description provided for @memberScansToCheckin.
+  ///
+  /// In en, this message translates to:
+  /// **'Member scans this code to check in'**
+  String get memberScansToCheckin;
+
+  /// No description provided for @statistics.
+  ///
+  /// In en, this message translates to:
+  /// **'Statistics'**
+  String get statistics;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @thisMonth.
+  ///
+  /// In en, this message translates to:
+  /// **'This Month'**
+  String get thisMonth;
+
+  /// No description provided for @total.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get total;
+
+  /// No description provided for @monthEarnings.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Earnings'**
+  String get monthEarnings;
+
+  /// No description provided for @noGymLinked.
+  ///
+  /// In en, this message translates to:
+  /// **'No gym linked'**
+  String get noGymLinked;
+
+  /// No description provided for @askAdminLinkGym.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the admin to link a gym to your account'**
+  String get askAdminLinkGym;
+
+  /// No description provided for @recentCheckins.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Check-ins'**
+  String get recentCheckins;
+
+  /// No description provided for @noCheckinsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No check-ins yet'**
+  String get noCheckinsYet;
+
+  /// No description provided for @member.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get member;
+
+  /// No description provided for @gymQrCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym QR Code'**
+  String get gymQrCode;
+
+  /// No description provided for @noGymLinkedToAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'No gym linked to your account'**
+  String get noGymLinkedToAccount;
+
+  /// No description provided for @showQrToMembers.
+  ///
+  /// In en, this message translates to:
+  /// **'Show this code to members to scan'**
+  String get showQrToMembers;
+
+  /// No description provided for @memberScansThisQr.
+  ///
+  /// In en, this message translates to:
+  /// **'Member scans this code to check in'**
+  String get memberScansThisQr;
+
+  /// No description provided for @qrCodeFixed.
+  ///
+  /// In en, this message translates to:
+  /// **'This code is fixed — it doesn\'t change'**
+  String get qrCodeFixed;
+
+  /// No description provided for @partnerHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get partnerHome;
+
+  /// No description provided for @partnerQr.
+  ///
+  /// In en, this message translates to:
+  /// **'QR Code'**
+  String get partnerQr;
+
+  /// No description provided for @defaultGymName.
+  ///
+  /// In en, this message translates to:
+  /// **'Gym'**
+  String get defaultGymName;
+
+  /// No description provided for @partnerDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'Partner'**
+  String get partnerDefault;
+
+  /// No description provided for @defaultInitial.
+  ///
+  /// In en, this message translates to:
+  /// **'M'**
+  String get defaultInitial;
+
+  /// No description provided for @amountPaid.
+  ///
+  /// In en, this message translates to:
+  /// **'Amount Paid'**
+  String get amountPaid;
 }
 
 class _AppLocalizationsDelegate
