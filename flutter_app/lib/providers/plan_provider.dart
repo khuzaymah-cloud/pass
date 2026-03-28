@@ -2,6 +2,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/plan.dart';
 import '../services/plan_service.dart';
 
-final planListProvider = FutureProvider<List<Plan>>((ref) async {
-  return PlanService().listPlans();
+final selectedDurationProvider = StateProvider<int>((ref) => 1);
+
+final planListProvider = FutureProvider.family<List<Plan>, int>((ref, duration) async {
+  return PlanService().listPlans(duration: duration);
+});
+
+final filteredPlanListProvider = FutureProvider<List<Plan>>((ref) async {
+  final duration = ref.watch(selectedDurationProvider);
+  return ref.watch(planListProvider(duration).future);
 });

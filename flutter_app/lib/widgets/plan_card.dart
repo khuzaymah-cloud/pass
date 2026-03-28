@@ -72,13 +72,26 @@ class PlanCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsetsDirectional.only(bottom: 6),
                   child: Text(
-                    '$currencySymbol/mo',
+                    currencySymbol,
                     style: const TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 14,
                     ),
                   ),
                 ),
+                if (plan.durationMonths > 1) ...[
+                  const SizedBox(width: 8),
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(bottom: 6),
+                    child: Text(
+                      '(${(plan.priceLocal / plan.durationMonths).toStringAsFixed(0)} $currencySymbol/mo)',
+                      style: TextStyle(
+                        color: AppColors.textSecondary.withValues(alpha: 0.7),
+                        fontSize: 12,
+                      ),
+                    ),
+                  ),
+                ],
               ],
             ),
             const SizedBox(height: AppSpacing.sm),
@@ -90,9 +103,7 @@ class PlanCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            ...plan
-                .features(lang)
-                .map(
+            ...plan.features(lang).map(
                   (f) => Padding(
                     padding: const EdgeInsetsDirectional.only(bottom: 6),
                     child: Row(

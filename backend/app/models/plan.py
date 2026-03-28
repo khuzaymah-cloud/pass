@@ -16,6 +16,7 @@ class Plan(Base):
     daily_rate = Column(DECIMAL(12, 3), nullable=False)
     max_visits = Column(Integer, nullable=False, default=30)
     validity_days = Column(Integer, nullable=False, default=30)
+    duration_months = Column(Integer, nullable=False, default=1)
     gym_tier_access = Column(String(20), nullable=False)
     features_en = Column(JSONB, default=[])
     features_ar = Column(JSONB, default=[])

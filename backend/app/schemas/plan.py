@@ -16,6 +16,7 @@ class PlanOut(BaseModel):
     daily_rate: Decimal
     max_visits: int
     validity_days: int
+    duration_months: int = 1
     gym_tier_access: str
     features_en: Optional[List[Any]] = []
     features_ar: Optional[List[Any]] = []

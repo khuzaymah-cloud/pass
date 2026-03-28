@@ -2,7 +2,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'plan.g.dart';
 
-double _toDouble(dynamic v) => v is num ? v.toDouble() : double.parse(v.toString());
+double _toDouble(dynamic v) =>
+    v is num ? v.toDouble() : double.parse(v.toString());
 
 @JsonSerializable()
 class Plan {
@@ -22,6 +23,8 @@ class Plan {
   final int maxVisits;
   @JsonKey(name: 'validity_days')
   final int validityDays;
+  @JsonKey(name: 'duration_months')
+  final int durationMonths;
   @JsonKey(name: 'gym_tier_access')
   final String gymTierAccess;
   @JsonKey(name: 'features_en')
@@ -43,6 +46,7 @@ class Plan {
     required this.dailyRate,
     this.maxVisits = 30,
     this.validityDays = 30,
+    this.durationMonths = 1,
     required this.gymTierAccess,
     this.featuresEn,
     this.featuresAr,

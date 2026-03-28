@@ -1,5 +1,5 @@
-from typing import List
-from fastapi import APIRouter, Depends
+from typing import List, Optional
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.database import get_db
@@ -13,10 +13,11 @@ router = APIRouter()
 
 @router.get("", response_model=List[PlanOut])
 async def list_plans(
+    duration: Optional[int] = Query(None, description="Filter by duration in months (1,3,6,12)"),
     country: Country = Depends(get_country),
     db: AsyncSession = Depends(get_db),
 ):
-    return await plan_service.list_plans(country, db)
+    return await plan_service.list_plans(country, db, duration_months=duration)
 
 
 @router.get("/{plan_id}", response_model=PlanOut)

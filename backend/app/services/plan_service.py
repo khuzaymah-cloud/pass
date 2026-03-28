@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 
@@ -6,12 +6,12 @@ from app.models.plan import Plan
 from app.models.country import Country
 
 
-async def list_plans(country: Country, db: AsyncSession) -> List[Plan]:
-    result = await db.execute(
-        select(Plan)
-        .where(Plan.country_id == country.id, Plan.is_active == True)
-        .order_by(Plan.sort_order, Plan.price_local)
-    )
+async def list_plans(country: Country, db: AsyncSession, duration_months: Optional[int] = None) -> List[Plan]:
+    q = select(Plan).where(Plan.country_id == country.id, Plan.is_active == True)
+    if duration_months:
+        q = q.where(Plan.duration_months == duration_months)
+    q = q.order_by(Plan.sort_order, Plan.price_local)
+    result = await db.execute(q)
     return list(result.scalars().all())
 
 
