@@ -181,6 +181,55 @@ async def scan_checkin(
     }
 
 
+# ─── Network endpoints (before /{gym_id}) ───
+
+TIER_HIERARCHY = {
+    'silver': ['standard'],
+    'gold': ['standard', 'gold'],
+    'platinum': ['standard', 'gold', 'platinum'],
+    'diamond': ['standard', 'gold', 'platinum', 'diamond'],
+}
+
+
+@router.get("/network-counts")
+async def get_network_counts(
+    country: Country = Depends(get_country),
+    db: AsyncSession = Depends(get_db),
+):
+    counts = {}
+    for plan_tier, accessible in TIER_HIERARCHY.items():
+        result = await db.execute(
+            select(func.count(Gym.id)).where(
+                Gym.country_id == country.id,
+                Gym.is_active == True,
+                Gym.deleted_at.is_(None),
+                Gym.tier.in_(accessible),
+            )
+        )
+        counts[plan_tier] = result.scalar() or 0
+    return counts
+
+
+@router.get("/network/{plan_tier}", response_model=List[GymOut])
+async def get_network_gyms(
+    plan_tier: str,
+    country: Country = Depends(get_country),
+    db: AsyncSession = Depends(get_db),
+):
+    accessible = TIER_HIERARCHY.get(plan_tier)
+    if not accessible:
+        raise HTTPException(status_code=400, detail="Invalid tier")
+    result = await db.execute(
+        select(Gym).where(
+            Gym.country_id == country.id,
+            Gym.is_active == True,
+            Gym.deleted_at.is_(None),
+            Gym.tier.in_(accessible),
+        ).order_by(Gym.name_en)
+    )
+    return list(result.scalars().all())
+
+
 # ─── Public endpoints ───
 
 @router.get("", response_model=List[GymOut])

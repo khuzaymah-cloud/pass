@@ -26,4 +26,15 @@ class GymService {
     final res = await _api.dio.get('/gyms/$id');
     return Gym.fromJson(res.data);
   }
+
+  Future<Map<String, int>> getNetworkCounts() async {
+    final res = await _api.dio.get('/gyms/network-counts');
+    return (res.data as Map<String, dynamic>)
+        .map((k, v) => MapEntry(k, (v as num).toInt()));
+  }
+
+  Future<List<Gym>> getNetworkGyms(String planTier) async {
+    final res = await _api.dio.get('/gyms/network/$planTier');
+    return (res.data as List).map((e) => Gym.fromJson(e)).toList();
+  }
 }
