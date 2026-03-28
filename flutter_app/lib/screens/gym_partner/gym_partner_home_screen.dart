@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../config/app_colors.dart';
-import '../../config/app_spacing.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/gym_partner_provider.dart';
-import '../../widgets/glass_card.dart';
-import '../../widgets/stat_card.dart';
 import '../../widgets/shimmer_loader.dart';
 import 'package:go_router/go_router.dart';
+
+const _kBlue = AppColors.accent;
 
 class GymPartnerHomeScreen extends ConsumerWidget {
   const GymPartnerHomeScreen({super.key});
@@ -26,30 +25,37 @@ class GymPartnerHomeScreen extends ConsumerWidget {
             // Header
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.all(AppSpacing.lg),
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Hey, ${user?.fullName ?? 'Partner'}',
-                          style: const TextStyle(
-                            color: AppColors.textPrimary,
-                            fontSize: 22,
-                            fontWeight: FontWeight.w600,
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: _kBlue.withValues(alpha: 0.12),
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: const Icon(Icons.fitness_center_rounded,
+                          color: _kBlue, size: 24),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'مرحباً، ${user?.fullName ?? 'شريك'}',
+                            style: const TextStyle(
+                                color: AppColors.textPrimary,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          'Gym Partner Dashboard',
-                          style: TextStyle(
-                            color: AppColors.textSecondary,
-                            fontSize: 14,
-                          ),
-                        ),
-                      ],
+                          const Text('لوحة تحكم النادي',
+                              style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 13)),
+                        ],
+                      ),
                     ),
                     IconButton(
                       icon: const Icon(Icons.logout_rounded,
@@ -62,54 +68,61 @@ class GymPartnerHomeScreen extends ConsumerWidget {
               ),
             ),
 
+            const SliverToBoxAdapter(child: SizedBox(height: 20)),
+
             // Scan QR Button
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: GestureDetector(
                   onTap: () => context.go('/partner/scan'),
-                  child: GlassCard(
+                  child: Container(
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [_kBlue, _kBlue.withValues(alpha: 0.8)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                            color: _kBlue.withValues(alpha: 0.3),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8))
+                      ],
+                    ),
                     child: Row(
                       children: [
                         Container(
-                          width: 60,
-                          height: 60,
+                          width: 56,
+                          height: 56,
                           decoration: BoxDecoration(
-                            color: AppColors.neonPrimary.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(AppRadius.md),
+                            color: Colors.white.withValues(alpha: 0.2),
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          child: const Icon(
-                            Icons.qr_code_scanner_rounded,
-                            color: AppColors.neonPrimary,
-                            size: 32,
-                          ),
+                          child: const Icon(Icons.qr_code_scanner_rounded,
+                              color: Colors.white, size: 28),
                         ),
-                        const SizedBox(width: AppSpacing.md),
+                        const SizedBox(width: 14),
                         const Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'Scan Member QR',
-                                style: TextStyle(
-                                  color: AppColors.textPrimary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
+                              Text('مسح رمز العضو',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 17,
+                                      fontWeight: FontWeight.w600)),
                               SizedBox(height: 4),
-                              Text(
-                                'Tap to scan and verify check-in',
-                                style: TextStyle(
-                                  color: AppColors.textSecondary,
-                                  fontSize: 13,
-                                ),
-                              ),
+                              Text('انقر لمسح QR وتسجيل الدخول',
+                                  style: TextStyle(
+                                      color: Colors.white70, fontSize: 13)),
                             ],
                           ),
                         ),
                         const Icon(Icons.arrow_forward_ios_rounded,
-                            color: AppColors.neonPrimary, size: 20),
+                            color: Colors.white70, size: 18),
                       ],
                     ),
                   ),
@@ -117,54 +130,59 @@ class GymPartnerHomeScreen extends ConsumerWidget {
               ),
             ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
             // Stats
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: stats.when(
                   data: (data) => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Statistics',
-                        style: TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
                       Row(
                         children: [
-                          StatCard(
-                            label: 'Today',
-                            value: '${data['visits_today'] ?? 0}',
-                            icon: Icons.today_rounded,
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          StatCard(
-                            label: 'This Month',
-                            value: '${data['visits_month'] ?? 0}',
-                            icon: Icons.calendar_month_rounded,
-                          ),
+                          Container(
+                              width: 4,
+                              height: 18,
+                              decoration: BoxDecoration(
+                                  color: _kBlue,
+                                  borderRadius: BorderRadius.circular(2))),
+                          const SizedBox(width: 8),
+                          const Text('الإحصائيات',
+                              style: TextStyle(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700)),
                         ],
                       ),
-                      const SizedBox(height: AppSpacing.sm),
+                      const SizedBox(height: 14),
                       Row(
                         children: [
-                          StatCard(
-                            label: 'All Time',
-                            value: '${data['visits_total'] ?? 0}',
-                            icon: Icons.bar_chart_rounded,
-                          ),
-                          const SizedBox(width: AppSpacing.sm),
-                          StatCard(
-                            label: 'Earnings (Month)',
-                            value:
-                                '${(data['earnings_month'] ?? 0.0).toStringAsFixed(2)} JD',
+                          _StatTile(
+                              icon: Icons.today_rounded,
+                              label: 'اليوم',
+                              value: '${data['visits_today'] ?? 0}'),
+                          const SizedBox(width: 12),
+                          _StatTile(
+                              icon: Icons.calendar_month_rounded,
+                              label: 'هذا الشهر',
+                              value: '${data['visits_month'] ?? 0}'),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      Row(
+                        children: [
+                          _StatTile(
+                              icon: Icons.bar_chart_rounded,
+                              label: 'الإجمالي',
+                              value: '${data['visits_total'] ?? 0}'),
+                          const SizedBox(width: 12),
+                          _StatTile(
                             icon: Icons.payments_rounded,
+                            label: 'أرباح الشهر',
+                            value:
+                                '${(data['earnings_month'] ?? 0.0).toStringAsFixed(2)} د.أ',
                           ),
                         ],
                       ),
@@ -174,27 +192,29 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                     children: List.generate(
                         2,
                         (_) => const Padding(
-                              padding: EdgeInsets.only(bottom: AppSpacing.sm),
+                              padding: EdgeInsets.only(bottom: 12),
                               child: ShimmerLoader(height: 90),
                             )),
                   ),
-                  error: (e, _) => const GlassCard(
-                    child: Column(
+                  error: (e, _) => Container(
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      color: AppColors.bgCard,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: AppColors.bgElevated),
+                    ),
+                    child: const Column(
                       children: [
                         Icon(Icons.info_outline,
                             color: AppColors.warning, size: 40),
-                        SizedBox(height: AppSpacing.sm),
-                        Text(
-                          'No gym linked yet',
-                          style: TextStyle(
-                              color: AppColors.textSecondary, fontSize: 14),
-                        ),
-                        SizedBox(height: AppSpacing.xs),
-                        Text(
-                          'Ask admin to assign a gym to your account',
-                          style: TextStyle(
-                              color: AppColors.textHint, fontSize: 12),
-                        ),
+                        SizedBox(height: 12),
+                        Text('لا يوجد نادي مرتبط',
+                            style: TextStyle(
+                                color: AppColors.textSecondary, fontSize: 14)),
+                        SizedBox(height: 4),
+                        Text('اطلب من المشرف ربط نادي بحسابك',
+                            style: TextStyle(
+                                color: AppColors.textHint, fontSize: 12)),
                       ],
                     ),
                   ),
@@ -202,19 +222,27 @@ class GymPartnerHomeScreen extends ConsumerWidget {
               ),
             ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.lg)),
+            const SliverToBoxAdapter(child: SizedBox(height: 24)),
 
-            // Recent check-ins
-            const SliverToBoxAdapter(
+            // Recent check-ins header
+            SliverToBoxAdapter(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-                child: Text(
-                  'Recent Check-ins',
-                  style: TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                  ),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  children: [
+                    Container(
+                        width: 4,
+                        height: 18,
+                        decoration: BoxDecoration(
+                            color: _kBlue,
+                            borderRadius: BorderRadius.circular(2))),
+                    const SizedBox(width: 8),
+                    const Text('آخر عمليات الدخول',
+                        style: TextStyle(
+                            color: AppColors.textPrimary,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700)),
+                  ],
                 ),
               ),
             ),
@@ -225,33 +253,30 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                 if (recent.isEmpty) {
                   return const SliverToBoxAdapter(
                     child: Padding(
-                      padding: EdgeInsets.all(AppSpacing.lg),
+                      padding: EdgeInsets.all(24),
                       child: Center(
-                        child: Text(
-                          'No check-ins yet',
-                          style: TextStyle(color: AppColors.textSecondary),
-                        ),
-                      ),
+                          child: Text('لا توجد عمليات دخول بعد',
+                              style:
+                                  TextStyle(color: AppColors.textSecondary))),
                     ),
                   );
                 }
                 return SliverPadding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.lg,
-                    vertical: AppSpacing.sm,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
                   sliver: SliverList.separated(
                     itemCount: recent.length,
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: AppSpacing.xs),
+                    separatorBuilder: (_, __) => const SizedBox(height: 8),
                     itemBuilder: (_, i) {
                       final item = recent[i] as Map<String, dynamic>;
                       final time =
                           DateTime.tryParse(item['checked_in_at'] ?? '');
-                      return GlassCard(
+                      return Container(
                         padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpacing.md,
-                          vertical: AppSpacing.sm,
+                            horizontal: 14, vertical: 12),
+                        decoration: BoxDecoration(
+                          color: AppColors.bgCard,
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: AppColors.bgElevated),
                         ),
                         child: Row(
                           children: [
@@ -259,35 +284,29 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                               width: 40,
                               height: 40,
                               decoration: BoxDecoration(
-                                color: AppColors.neonPrimary.withValues(alpha: 0.12),
-                                borderRadius:
-                                    BorderRadius.circular(AppRadius.sm),
+                                color: _kBlue.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Icon(
-                                Icons.person_rounded,
-                                color: AppColors.neonPrimary,
-                                size: 22,
-                              ),
+                              child: const Icon(Icons.person_rounded,
+                                  color: _kBlue, size: 22),
                             ),
-                            const SizedBox(width: AppSpacing.sm),
+                            const SizedBox(width: 12),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    item['member_name'] ?? 'Member',
+                                    item['member_name'] ?? 'عضو',
                                     style: const TextStyle(
-                                      color: AppColors.textPrimary,
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                        color: AppColors.textPrimary,
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w500),
                                   ),
                                   Text(
-                                    '${item['plan_tier'] ?? ''} • ${item['daily_rate_paid']?.toStringAsFixed(2) ?? '0.00'} JD',
+                                    '${item['plan_tier'] ?? ''} • ${item['daily_rate_paid']?.toStringAsFixed(2) ?? '0.00'} د.أ',
                                     style: const TextStyle(
-                                      color: AppColors.textSecondary,
-                                      fontSize: 12,
-                                    ),
+                                        color: AppColors.textSecondary,
+                                        fontSize: 12),
                                   ),
                                 ],
                               ),
@@ -296,9 +315,7 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                               Text(
                                 '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}',
                                 style: const TextStyle(
-                                  color: AppColors.textHint,
-                                  fontSize: 12,
-                                ),
+                                    color: AppColors.textHint, fontSize: 12),
                               ),
                           ],
                         ),
@@ -312,7 +329,52 @@ class GymPartnerHomeScreen extends ConsumerWidget {
                   const SliverToBoxAdapter(child: SizedBox.shrink()),
             ),
 
-            const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
+            const SliverToBoxAdapter(child: SizedBox(height: 32)),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+  const _StatTile(
+      {required this.icon, required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.bgCard,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.bgElevated),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                  color: _kBlue.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(10)),
+              child: Icon(icon, color: _kBlue, size: 18),
+            ),
+            const SizedBox(height: 12),
+            Text(value,
+                style: const TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700)),
+            const SizedBox(height: 2),
+            Text(label,
+                style: const TextStyle(
+                    color: AppColors.textSecondary, fontSize: 12)),
           ],
         ),
       ),
