@@ -63,15 +63,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         ],
       ),
 
-      // ─── Member shell (4 tabs) ───
+      // ─── Member shell (3 tabs) ───
       ShellRoute(
         builder: (_, __, child) => _MainShell(child: child),
         routes: [
           GoRoute(path: '/', builder: (_, __) => const HomeScreen()),
           GoRoute(path: '/plans', builder: (_, __) => const PlansScreen()),
+          GoRoute(path: '/account', builder: (_, __) => const ProfileScreen()),
+          // QR scanner accessible from deep link / programmatic nav
           GoRoute(
               path: '/checkin', builder: (_, __) => const QrCheckinScreen()),
-          GoRoute(path: '/account', builder: (_, __) => const ProfileScreen()),
           // Sub-pages accessible from tabs
           GoRoute(
             path: '/gyms/:id',
@@ -120,18 +121,17 @@ class _BottomNav extends StatelessWidget {
     final index = switch (location) {
       '/' => 0,
       _ when location.startsWith('/plans') => 1,
-      '/checkin' => 2,
       _
           when location.startsWith('/account') ||
               location.startsWith('/settings') =>
-        3,
+        2,
       _ => 0,
     };
 
     return BottomNavigationBar(
       currentIndex: index,
       onTap: (i) {
-        final routes = ['/', '/plans', '/checkin', '/account'];
+        final routes = ['/', '/plans', '/account'];
         context.go(routes[i]);
       },
       items: [
@@ -139,9 +139,6 @@ class _BottomNav extends StatelessWidget {
             icon: const Icon(Icons.home_rounded), label: context.l10n.home),
         BottomNavigationBarItem(
             icon: const Icon(Icons.tune_rounded), label: context.l10n.plans),
-        BottomNavigationBarItem(
-            icon: const Icon(Icons.qr_code_scanner_rounded),
-            label: context.l10n.checkIn),
         BottomNavigationBarItem(
             icon: const Icon(Icons.person_rounded),
             label: context.l10n.profile),
@@ -180,9 +177,9 @@ class _PartnerBottomNav extends StatelessWidget {
       },
       items: const [
         BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_rounded), label: 'Dashboard'),
+            icon: Icon(Icons.dashboard_rounded), label: 'الرئيسية'),
         BottomNavigationBarItem(
-            icon: Icon(Icons.qr_code_scanner_rounded), label: 'Scan'),
+            icon: Icon(Icons.qr_code_2_rounded), label: 'رمز QR'),
       ],
     );
   }
